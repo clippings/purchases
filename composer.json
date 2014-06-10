@@ -1,0 +1,37 @@
+{
+    "name": "clippings/purchases",
+    "description": "Multi-Store Marketplace Core Components",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Ivan Kerin",
+            "email": "ikerin@gmail.com",
+            "role": "Author"
+        }
+    ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/harp-orm/core"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/harp-orm/harp"
+        }
+    ],
+    "require": {
+        "harp-orm/harp": "dev-master",
+        "harp-orm/core": "dev-master",
+        "harp-orm/query": "dev-master",
+        "harp-orm/validate": "dev-master",
+        "harp-orm/materialized-path": "dev-master",
+        "harp-orm/locations": "dev-master",
+        "harp-orm/timestamps": "dev-master",
+        "sebastian/money": "~1.3",
+        "clippings/currency-convert": "~0.1",
+        "omnipay/dummy": "~2.0"
+    },
+    "autoload": {
+        "psr-4": {"CL\\Purchases\\": "src/"}
+    }
+}
