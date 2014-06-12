@@ -17,6 +17,11 @@ class ProductItem extends BasketItem
         return Repo\ProductItem::get();
     }
 
+    public function getName()
+    {
+        return $this->getProduct()->name;
+    }
+
     public function getPrice()
     {
         if ($this->isFrozen) {

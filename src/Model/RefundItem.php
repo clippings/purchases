@@ -17,6 +17,13 @@ class RefundItem extends BasketItem
 {
     public $refundId;
 
+    public function getName()
+    {
+        $itemName = $this->getItem()->getName();
+
+        return "Refund for {$itemName}";
+    }
+
     public function getRepo()
     {
         return Repo\RefundItem::get();

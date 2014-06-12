@@ -8,6 +8,9 @@ use CL\Purchases\Repo;
 use CL\Purchases\LinkMany;
 use SebastianBergmann\Money\Currency;
 use SebastianBergmann\Money\Money;
+use Omnipay\Common\GatewayInterface;
+use Omnipay\Common\Message\RequestInterface;
+use Omnipay\Common\Item;
 use Closure;
 
 /**
@@ -21,7 +24,6 @@ class Basket extends AbstractModel
     const PAID = 2;
 
     public $id;
-    public $omnipay;
     public $currency = 'GBP';
     public $status;
     public $billingId;
@@ -41,21 +43,27 @@ class Basket extends AbstractModel
 
     public function getTotal()
     {
-        $prices = $this->getItems()->get()->pluckProperty('price');
+        $prices = $this->getItems()->get()->map(function(BasketItem $item){
+            return $item->getPrice()->getAmount();
+        });
 
         return new Money(array_sum($prices), $this->getCurrency());
     }
 
     public function getProductTotal()
     {
-        $prices = $this->getItems()->onlyProduct()->pluckProperty('price');
+        $prices = $this->getItems()->onlyProduct()->map(function(ProductItem $item){
+            return $item->getPrice()->getAmount();
+        });
 
         return new Money(array_sum($prices), $this->getCurrency());
     }
 
     public function getRefundTotal()
     {
-        $prices = $this->getItems()->onlyRefund()->pluckProperty('price');
+        $prices = $this->getItems()->onlyRefund()->map(function(RefundItem $item){
+            return $item->getPrice()->getAmount();
+        });
 
         return new Money(array_sum($prices), $this->getCurrency());
     }
@@ -117,6 +125,42 @@ class Basket extends AbstractModel
     public function isPaid()
     {
         return $this->status === self::PAID;
+    }
+
+    public function getRequestParameters()
+    {
+        $parameters = [];
+
+        $billing = $this->getBilling();
+
+        $parameters['card'] = [
+            'firstName' => $billing->firstName,
+            'lastName'  => $billing->lastName,
+            'address1'  => $billing->line1,
+            'address2'  => $billing->line2,
+            'city'      => $billing->getCity()->name,
+            'country'   => $billing->getCountry()->code,
+            'postcode'  => $billing->postCode,
+            'phone'     => $billing->phone,
+            'email'     => $billing->email,
+        ];
+
+        $items = [];
+
+        foreach ($this->getItems() as $item) {
+            $parameters['items'] []= [
+                'name' => $item->getId(),
+                'description' => $item->getName(),
+                'price' => (float) ($item->getPrice()->getAmount() / 100),
+                'quantity' => $item->quantity,
+            ];
+        }
+
+        $parameters['amount'] = (float) ($this->getTotal()->getAmount() / 100);
+        $parameters['currency'] = $this->currency;
+        $parameters['transactionReference'] = $this->getId();
+
+        return $parameters;
     }
 
     public function addProduct(Product $product, $quantity = 1)

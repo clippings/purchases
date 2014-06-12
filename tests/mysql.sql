@@ -110,12 +110,12 @@ VALUES
 INSERT INTO `BasketItem`
 (`id`, `class`, `basketId`, `purchaseId`, `refundId`, `refId`, `price`, `isFrozen`, `deletedAt`)
 VALUES
-  (1, 'CL\\Purchases\\Model\\ProductItem', 1, 1, NULL, 1, 1000, 1, NULL),
-  (2, 'CL\\Purchases\\Model\\ProductItem', 1, 1, NULL, 2, 2000, 1, NULL),
-  (3, 'CL\\Purchases\\Model\\ProductItem', 1, 1, NULL, 3, 3000, 1, NULL),
-  (4, 'CL\\Purchases\\Model\\ProductItem', 1, 2, NULL, 4, 4000, 1, NULL),
+  (1, 'CL\\Purchases\\Model\\ProductItem', 1, 1, NULL, 1, 1000,  1, NULL),
+  (2, 'CL\\Purchases\\Model\\ProductItem', 1, 1, NULL, 2, 2000,  1, NULL),
+  (3, 'CL\\Purchases\\Model\\ProductItem', 1, 1, NULL, 3, 3000,  1, NULL),
+  (4, 'CL\\Purchases\\Model\\ProductItem', 1, 2, NULL, 4, 4000,  1, NULL),
   (5, 'CL\\Purchases\\Model\\RefundItem',  1, 2, 1,    4, -4000, 1, NULL),
-  (6, 'CL\\Purchases\\Model\\ProductItem', 1, 2, NULL, 5, 5000, 1, '2014-02-03 00:00:00');
+  (6, 'CL\\Purchases\\Model\\ProductItem', 1, 2, NULL, 5, 5000,  1, '2014-02-03 00:00:00');
 
 INSERT INTO `Purchase`
 (`id`, `status`, `basketId`, `storeId`, `createdAt`, `updatedAt`, `deletedAt`)
@@ -127,10 +127,12 @@ INSERT INTO `Product`
 (`id`, `name`, `storeId`, `price`, `currency`, `deletedAt`)
 VALUES
   (1, 'Product 1', 1, 1000, 'GBP', NULL),
-  (2, 'Product 1', 1, 2000, 'GBP', NULL),
-  (3, 'Product 1', 1, 3000, 'GBP', NULL),
-  (4, 'Product 1', 1, 4000, 'GBP', NULL),
-  (5, 'Product 1', 1, 5000, 'GBP', NULL);
+  (2, 'Product 2', 1, 2000, 'GBP', NULL),
+  (3, 'Product 3', 1, 3000, 'GBP', NULL),
+  (4, 'Product 4', 1, 4000, 'GBP', NULL),
+  (5, 'Product 5', 1, 5000, 'GBP', NULL),
+  (6, 'Product 6', 1, 6000, 'EUR', NULL),
+  (7, 'Product 7', 2, 7000, 'GBP', NULL);
 
 INSERT INTO `Refund`
 (`id`, `state`, `basketId`, `deletedAt`)

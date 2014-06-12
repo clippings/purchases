@@ -23,6 +23,14 @@ class BasketItem extends AbstractModel
     public $class;
     public $deletedAt;
 
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'Item';
+    }
+
     public function getRepo()
     {
         return Repo\BasketItem::get();

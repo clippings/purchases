@@ -284,12 +284,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/harp-orm/core.git",
-                "reference": "e6392906436628653bd0f7e5bb25e198dff338ca"
+                "reference": "ba7e42a6838cb5a7b0231eaad79ff793e986ca0b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/harp-orm/core/zipball/e6392906436628653bd0f7e5bb25e198dff338ca",
-                "reference": "e6392906436628653bd0f7e5bb25e198dff338ca",
+                "url": "https://api.github.com/repos/harp-orm/core/zipball/ba7e42a6838cb5a7b0231eaad79ff793e986ca0b",
+                "reference": "ba7e42a6838cb5a7b0231eaad79ff793e986ca0b",
                 "shasum": ""
             },
             "require": {
@@ -322,7 +322,7 @@
                 "source": "https://github.com/harp-orm/core/tree/master",
                 "issues": "https://github.com/harp-orm/core/issues"
             },
-            "time": "2014-06-09 14:54:58"
+            "time": "2014-06-12 07:45:32"
         },
         {
             "name": "harp-orm/harp",
@@ -555,16 +555,16 @@
         },
         {
             "name": "harp-orm/util",
-            "version": "0.2.0",
+            "version": "0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/harp-orm/util.git",
-                "reference": "902c0d451126279fa0d5dbff7f3f99ce9e6cf9d2"
+                "reference": "66de94b09e584b00d1a67090e72f0e31454fab15"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/harp-orm/util/zipball/902c0d451126279fa0d5dbff7f3f99ce9e6cf9d2",
-                "reference": "902c0d451126279fa0d5dbff7f3f99ce9e6cf9d2",
+                "url": "https://api.github.com/repos/harp-orm/util/zipball/66de94b09e584b00d1a67090e72f0e31454fab15",
+                "reference": "66de94b09e584b00d1a67090e72f0e31454fab15",
                 "shasum": ""
             },
             "type": "library",
@@ -586,7 +586,7 @@
                 }
             ],
             "description": "General purpose helper methods",
-            "time": "2014-05-31 11:21:41"
+            "time": "2014-06-12 07:03:18"
         },
         {
             "name": "harp-orm/validate",
