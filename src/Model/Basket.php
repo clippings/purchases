@@ -3,7 +3,7 @@
 namespace CL\Purchases\Model;
 
 use CL\Purchases\Repo;
-use Harp\Transfer\Model\AbstractTransfer;
+use CL\Transfer\Model\AbstractTransfer;
 use Harp\Money\Model\CurrencyTrait;
 use Harp\Timestamps\TimestampsModelTrait;
 use Omnipay\Common\GatewayInterface;
@@ -43,6 +43,24 @@ class Basket extends AbstractTransfer
         return $this->getLink('items')->get()->filter(function (BasketItem $item) {
             return $item instanceof ProductItem;
         });
+    }
+
+    public function performFreeze()
+    {
+        parent::performFreeze();
+
+        foreach ($this->getPurchases() as $purchase) {
+            $purchase->freeze();
+        }
+    }
+
+    public function performUnfreeze()
+    {
+        parent::performUnfreeze();
+
+        foreach ($this->getPurchases() as $purchase) {
+            $purchase->unfreeze();
+        }
     }
 
     public function getBilling()
@@ -117,5 +135,10 @@ class Basket extends AbstractTransfer
     public function purchase(GatewayInterface $gateway, array $parameters)
     {
         return $this->execute($gateway, 'purchase', $parameters);
+    }
+
+    public function complete(GatewayInterface $gateway, array $parameters)
+    {
+        return $this->execute($gateway, 'complete', $parameters);
     }
 }

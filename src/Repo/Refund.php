@@ -2,7 +2,7 @@
 
 namespace CL\Purchases\Repo;
 
-use Harp\Transfer\Repo\AbstractTransfer;
+use CL\Transfer\Repo\AbstractTransfer;
 use Harp\Harp\Rel;
 
 /**

@@ -4,7 +4,7 @@ namespace CL\Purchases\Model;
 
 use Harp\Harp\AbstractModel;
 use CL\Purchases\Repo;
-use Harp\Transfer\Model\AbstractItem;
+use CL\Transfer\Model\AbstractItem;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>

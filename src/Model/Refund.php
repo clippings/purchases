@@ -4,7 +4,8 @@ namespace CL\Purchases\Model;
 
 use Harp\Harp\AbstractModel;
 use CL\Purchases\Repo;
-use Harp\Transfer\Model\AbstractTransfer;
+use CL\Transfer\Model\AbstractTransfer;
+use Omnipay\Common\GatewayInterface;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -45,5 +46,10 @@ class Refund extends AbstractTransfer
         $defaultParameters['requestData'] = $this->getPurchase()->getBasket()->responseData;
 
         return parent::getRequestParameters($defaultParameters);
+    }
+
+    public function refund(GatewayInterface $refund, array $parameters)
+    {
+        $this->execute($refund, 'refund', $parameters);
     }
 }

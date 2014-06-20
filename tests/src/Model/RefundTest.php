@@ -85,10 +85,10 @@ class RefundTest extends AbstractTestCase
             'currency' => 'GBP',
             'transactionReference' => 1,
             'requestData' => [
-              'amount' => '380.00',
-              'reference' => '53a43cc327040',
-              'success' => true,
-              'message' => 'Success',
+                'amount' => '380.00',
+                'reference' => '53a43cc327040',
+                'success' => true,
+                'message' => 'Success',
             ],
         ];
 

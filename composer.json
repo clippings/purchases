@@ -20,7 +20,7 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/harp-orm/transfer"
+            "url": "https://github.com/clippings/transfer"
         }
     ],
     "require": {
@@ -32,9 +32,9 @@
         "harp-orm/materialized-path": "dev-master",
         "harp-orm/locations": "dev-master",
         "harp-orm/timestamps": "dev-master",
-        "harp-orm/transfer": "dev-master",
         "harp-orm/money": "dev-master",
         "sebastian/money": "~1.3",
+        "clippings/transfer": "dev-master",
         "clippings/currency-convert": "~0.1",
         "omnipay/dummy": "~2.0"
     },

@@ -2,9 +2,9 @@
 
 namespace CL\Purchases\Repo;
 
-use Harp\Transfer\Repo\AbstractItem;
-use Harp\Harp\Rel;
+use CL\Transfer\Repo\AbstractItem;
 use CL\Purchases\Repo;
+use Harp\Harp\Rel;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>

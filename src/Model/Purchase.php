@@ -3,8 +3,8 @@
 namespace CL\Purchases\Model;
 
 use Harp\Harp\AbstractModel;
-use Harp\Transfer\Model\AbstractItemGroup;
 use Harp\Timestamps\TimestampsModelTrait;
+use CL\Transfer\Model\AbstractItemGroup;
 use CL\Purchases\Repo;
 
 /**
