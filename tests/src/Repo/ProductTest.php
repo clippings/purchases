@@ -21,8 +21,8 @@ class ProductTest extends AbstractTestCase
         $store = $product->getRelOrError('store');
         $this->assertInstanceOf('CL\Purchases\Repo\Store', $store->getForeignRepo());
 
-        $basketItems = $product->getRelOrError('basketItems');
-        $this->assertInstanceOf('CL\Purchases\Repo\BasketItem', $basketItems->getForeignRepo());
+        $items = $product->getRelOrError('productItems');
+        $this->assertInstanceOf('CL\Purchases\Repo\ProductItem', $items->getForeignRepo());
 
         $model = $product->newModel();
 

@@ -5,7 +5,6 @@ namespace CL\Purchases\Repo;
 use Harp\Harp\AbstractRepo;
 use Harp\Harp\Rel;
 use Harp\Validate\Assert;
-use CL\Purchases\Repo;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>

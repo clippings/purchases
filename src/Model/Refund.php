@@ -4,50 +4,46 @@ namespace CL\Purchases\Model;
 
 use Harp\Harp\AbstractModel;
 use CL\Purchases\Repo;
-use SebastianBergmann\Money\Currency;
-use SebastianBergmann\Money\Money;
-
+use Harp\Transfer\Model\AbstractTransfer;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class Refund extends AbstractModel
+class Refund extends AbstractTransfer
 {
+    public $purchaseId;
+
     public function getRepo()
     {
         return Repo\Refund::get();
     }
 
-    public $id;
-    public $basketId;
-    public $deletedAt;
-
-    public function getTotalPrice()
-    {
-        $prices = $this->getItems()->get()->pluckProperty('price');
-
-        return new Money(array_sum($prices), $this->getCurrency());
-    }
-
     public function getCurrency()
     {
-        return $this->getBasket()->getCurrency();
+        return $this->getPurchase()->getCurrency();
     }
 
-    public function getBasket()
+    public function getPurchase()
     {
-        return $this->getLink('basket')->get();
+        return $this->getLink('purchase')->get();
     }
 
-    public function setBasket(Basket $basket)
+    public function setPurchase(Purchase $purchase)
     {
-        return $this->getLink('basket')->set($basket);
+        return $this->getLink('purchase')->set($purchase);
     }
 
     public function getItems()
     {
         return $this->getLink('items');
+    }
+
+    public function getRequestParameters(array $defaultParameters)
+    {
+        $defaultParameters['requestData'] = $this->getPurchase()->getBasket()->responseData;
+
+        return parent::getRequestParameters($defaultParameters);
     }
 }

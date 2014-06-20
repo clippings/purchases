@@ -71,42 +71,6 @@ class BasketItemTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::getPrice
-     * @covers ::setPrice
-     */
-    public function testPrice()
-    {
-        $basketItem = new BasketItem(['price' => 150]);
-        $basket = new Basket(['currency' => 'EUR']);
-
-        $basketItem->setBasket($basket);
-
-        $this->assertTrue($basketItem->getPrice()->equals(new EUR(150)));
-    }
-
-    public function testFreeze()
-    {
-        $basketItem = $this->getMock('CL\Purchases\Model\BasketItem', ['getPrice'], [['price' => 150]]);
-
-        $basketItem
-            ->expects($this->once())
-            ->method('getPrice')
-            ->will($this->returnValue(new GBP(2000)));
-
-        $this->assertEquals(150, $basketItem->price);
-
-        $basketItem->freeze();
-
-        $this->assertEquals(true, $basketItem->isFrozen);
-
-        $this->assertEquals(2000, $basketItem->price);
-
-        $basketItem->unfreeze();
-
-        $this->assertEquals(false, $basketItem->isFrozen);
-    }
-
-    /**
      * @coversNothing
      */
     public function testIntegration()

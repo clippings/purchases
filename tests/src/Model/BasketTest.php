@@ -37,7 +37,7 @@ class BasketTest extends AbstractTestCase
 
         $purchases = $basket->getPurchases();
 
-        $this->assertInstanceOf('CL\Purchases\Collection\Purchases', $purchases);
+        $this->assertContainsOnlyInstancesOf('CL\Purchases\Model\Purchase', $purchases->toArray());
     }
 
     /**
@@ -49,43 +49,7 @@ class BasketTest extends AbstractTestCase
 
         $items = $basket->getItems();
 
-        $this->assertInstanceOf('CL\Purchases\Collection\BasketItems', $items);
-    }
-
-    /**
-     * @covers ::getTotal
-     * @covers ::getProductTotal
-     * @covers ::getRefundTotal
-     */
-    public function testTotal()
-    {
-        $basket = Repo\Basket::get()->find(1);
-
-        $this->assertTrue($basket->getTotal()->equals(new GBP(6000)));
-        $this->assertTrue($basket->getProductTotal()->equals(new GBP(10000)));
-        $this->assertTrue($basket->getRefundTotal()->equals(new GBP(-4000)));
-    }
-
-    /**
-     * @covers ::isPaid
-     */
-    public function testIsPaid()
-    {
-        $basket = new Basket(['status' => Basket::PAID]);
-
-        $this->assertTrue($basket->isPaid());
-        $this->assertFalse($basket->isPaymentPending());
-    }
-
-    /**
-     * @covers ::isPaymentPending
-     */
-    public function testIsPending()
-    {
-        $basket = new Basket(['status' => Basket::PAYMENT_PENDING]);
-
-        $this->assertFalse($basket->isPaid());
-        $this->assertTrue($basket->isPaymentPending());
+        $this->assertContainsOnlyInstancesOf('CL\Purchases\Model\BasketItem', $items->toArray());
     }
 
     /**
@@ -105,10 +69,12 @@ class BasketTest extends AbstractTestCase
         Repo\Basket::get()->save($basket);
 
         $item1 = $basket->getItems()->getFirst();
+        $this->assertInstanceOf('CL\Purchases\Model\ProductItem', $item1);
         $this->assertSame($product1, $item1->getProduct());
         $this->assertEquals(5, $item1->quantity);
 
         $item2 = $basket->getItems()->getNext();
+        $this->assertInstanceOf('CL\Purchases\Model\ProductItem', $item2);
         $this->assertSame($product2, $item2->getProduct());
         $this->assertEquals(1, $item2->quantity);
 
@@ -116,46 +82,8 @@ class BasketTest extends AbstractTestCase
         $this->assertCount(1, $basket->getPurchases());
 
         $this->assertEquals($product1->getStore(), $basket->getPurchases()->getFirst()->getStore());
-        $this->assertTrue($basket->getPurchases()->getFirst()->getBasketItems()->has($item1));
-        $this->assertTrue($basket->getPurchases()->getFirst()->getBasketItems()->has($item2));
-    }
-
-    /**
-     * @covers ::freeze
-     * @covers ::unfreeze
-     */
-    public function testFreeze()
-    {
-        $basket = Repo\Basket::get()->find(1);
-
-        $item1 = $basket->getItems()->getFirst();
-        $item2 = $basket->getItems()->getNext();
-        $item3 = $basket->getItems()->getNext();
-
-        $this->assertEquals(true, $item1->isFrozen);
-        $this->assertEquals(true, $item2->isFrozen);
-        $this->assertEquals(true, $item3->isFrozen);
-
-        $basket->unfreeze();
-
-        $this->assertEquals(false, $item1->isFrozen);
-        $this->assertTrue($item1->getPrice()->equals(new GBP(1000)));
-
-        $this->assertEquals(false, $item2->isFrozen);
-        $this->assertTrue($item2->getPrice()->equals(new GBP(2000)));
-
-        $this->assertEquals(false, $item3->isFrozen);
-        $this->assertTrue($item3->getPrice()->equals(new GBP(3000)));
-
-        $item1->getProduct()->setPrice(new GBP(20000));
-
-        $basket->freeze();
-
-        $this->assertEquals(true, $item1->isFrozen);
-        $this->assertTrue($item1->getPrice()->equals(new GBP(20000)));
-
-        $this->assertEquals(true, $item2->isFrozen);
-        $this->assertEquals(true, $item3->isFrozen);
+        $this->assertTrue($basket->getPurchases()->getFirst()->getItems()->has($item1));
+        $this->assertTrue($basket->getPurchases()->getFirst()->getItems()->has($item2));
     }
 
     /**
@@ -169,15 +97,67 @@ class BasketTest extends AbstractTestCase
         $item2 = Repo\BasketItem::get()->find(2);
         $item3 = Repo\BasketItem::get()->find(3);
         $item4 = Repo\BasketItem::get()->find(4);
-        $item5 = Repo\BasketItem::get()->find(5);
+
         $purchase1 = Repo\Purchase::get()->find(1);
         $purchase2 = Repo\Purchase::get()->find(2);
         $billing = Repo\Address::get()->find(1);
 
         $items = $basket->getItems();
 
-        $this->assertSame([$item1, $item2, $item3, $item4, $item5], $basket->getItems()->toArray());
+        $this->assertSame([$item1, $item2, $item3, $item4], $basket->getItems()->toArray());
         $this->assertSame([$purchase1, $purchase2], $basket->getPurchases()->toArray());
         $this->assertSame($billing, $basket->getBilling());
+    }
+
+    public function testGetRequestParameters()
+    {
+        $basket  = Repo\Basket::get()->find(1);
+
+        $data = $basket->getRequestParameters(array());
+
+        $expected = array(
+            'card' => [
+                'firstName' => 'John',
+                'lastName' => 'Doe',
+                'address1' => 'Moskovska',
+                'address2' => '132',
+                'city' => 'Sofia',
+                'country' => 'BG',
+                'postcode' => '1000',
+                'phone' => '123123',
+                'email' => 'john@example.com',
+            ],
+            'items' => [
+                [
+                    'name' => 1,
+                    'description' => 'Product 1',
+                    'price' => 10,
+                    'quantity' => 1,
+                ],
+                [
+                    'name' => 2,
+                    'description' => 'Product 2',
+                    'price' => 20,
+                    'quantity' => 1,
+                ],
+                [
+                    'name' => 3,
+                    'description' => 'Product 3',
+                    'price' => 30,
+                    'quantity' => 1,
+                ],
+                [
+                    'name' => 4,
+                    'description' => 'Product 4',
+                    'price' => 40,
+                    'quantity' => 1,
+                ],
+            ],
+            'amount' => 100.00,
+            'currency' => 'GBP',
+            'transactionReference' => 1,
+        );
+
+        $this->assertEquals($expected, $data);
     }
 }

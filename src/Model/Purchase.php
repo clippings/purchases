@@ -3,6 +3,7 @@
 namespace CL\Purchases\Model;
 
 use Harp\Harp\AbstractModel;
+use Harp\Transfer\Model\AbstractItemGroup;
 use Harp\Timestamps\TimestampsModelTrait;
 use CL\Purchases\Repo;
 
@@ -11,24 +12,31 @@ use CL\Purchases\Repo;
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class Purchase extends AbstractModel
+class Purchase extends AbstractItemGroup
 {
     use TimestampsModelTrait;
+
+    public $basketId;
+    public $storeId;
+
+    public function getCurrency()
+    {
+        return $this->getBasket()->getCurrency();
+    }
 
     public function getRepo()
     {
         return Repo\Purchase::get();
     }
 
-    public $id;
-    public $status;
-    public $basketId;
-    public $storeId;
-    public $deletedAt;
-
-    public function getBasketItems()
+    public function getItems()
     {
-        return $this->getLink('basketItems');
+        return $this->getLink('items');
+    }
+
+    public function getRefunds()
+    {
+        return $this->getLink('refunds');
     }
 
     public function getBasket()

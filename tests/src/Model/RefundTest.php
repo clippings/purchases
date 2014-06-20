@@ -5,6 +5,7 @@ namespace CL\Purchases\Test\Model;
 use CL\Purchases\Test\AbstractTestCase;
 use CL\Purchases\Model\Store;
 use CL\Purchases\Model\Basket;
+use CL\Purchases\Model\Purchase;
 use CL\Purchases\Model\Refund;
 use CL\Purchases\Model\RefundItem;
 use CL\Purchases\Repo;
@@ -31,23 +32,23 @@ class RefundTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::getBasket
-     * @covers ::setBasket
+     * @covers ::getPurchase
+     * @covers ::setPurchase
      */
-    public function testBasket()
+    public function testPurchase()
     {
         $refund = new Refund();
 
-        $store = $refund->getBasket();
+        $purchase = $refund->getPurchase();
 
-        $this->assertInstanceOf('CL\Purchases\Model\Basket', $store);
-        $this->assertTrue($store->isVoid());
+        $this->assertInstanceOf('CL\Purchases\Model\Purchase', $purchase);
+        $this->assertTrue($purchase->isVoid());
 
-        $store = new Basket();
+        $purchase = new Purchase();
 
-        $refund->setBasket($store);
+        $refund->setPurchase($purchase);
 
-        $this->assertSame($store, $refund->getBasket());
+        $this->assertSame($purchase, $refund->getPurchase());
     }
 
     /**
@@ -59,8 +60,39 @@ class RefundTest extends AbstractTestCase
 
         $items = $refund->getItems();
 
-        $this->assertInstanceOf('Harp\Core\Repo\LinkMany', $items);
         $this->assertEquals(Repo\RefundItem::get(), $items->getRel()->getForeignRepo());
+    }
+
+    /**
+     * @covers ::getRequestParameters
+     */
+    public function testGetRequestParameters()
+    {
+        $basket  = Repo\Refund::get()->find(1);
+
+        $data = $basket->getRequestParameters(array());
+
+        $expected = [
+            'items' => [
+                [
+                    'name' => 4,
+                    'description' => 'Refund for 4',
+                    'price' => 40,
+                    'quantity' => 1,
+                ],
+            ],
+            'amount' => 40,
+            'currency' => 'GBP',
+            'transactionReference' => 1,
+            'requestData' => [
+              'amount' => '380.00',
+              'reference' => '53a43cc327040',
+              'success' => true,
+              'message' => 'Success',
+            ],
+        ];
+
+        $this->assertEquals($expected, $data);
     }
 
     /**
@@ -69,26 +101,14 @@ class RefundTest extends AbstractTestCase
     public function testCurrency()
     {
         $refund = new Refund();
-        $refund->setBasket(new Basket(['currency' => 'GBP']));
+        $purchase = new Purchase();
+        $refund->setPurchase($purchase);
+        $purchase->setBasket(new Basket(['currency' => 'GBP']));
 
         $this->assertEquals(new Currency('GBP'), $refund->getCurrency());
 
-        $refund->setBasket(new Basket(['currency' => 'EUR']));
+        $purchase->setBasket(new Basket(['currency' => 'EUR']));
 
         $this->assertEquals(new Currency('EUR'), $refund->getCurrency());
-    }
-
-    /**
-     * @covers ::getTotalPrice
-     */
-    public function testGetTotalPrice()
-    {
-        $refund = new Refund();
-        $refund->setBasket(new Basket(['currency' => 'GBP']));
-        $refund->getItems()
-            ->add(new RefundItem(['price' => 100]))
-            ->add(new RefundItem(['price' => 250]));
-
-        $this->assertEquals(new Money(350, new Currency('GBP')), $refund->getTotalPrice());
     }
 }

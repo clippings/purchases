@@ -2,7 +2,7 @@
 
 namespace CL\Purchases\Repo;
 
-use Harp\Harp\AbstractRepo;
+use Harp\Transfer\Repo\AbstractItem;
 use Harp\Harp\Rel;
 use CL\Purchases\Repo;
 
@@ -11,7 +11,7 @@ use CL\Purchases\Repo;
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class RefundItem extends BasketItem
+class RefundItem extends AbstractItem
 {
     public static function newInstance()
     {
@@ -23,7 +23,7 @@ class RefundItem extends BasketItem
         parent::initialize();
 
         $this
-            ->setTable('BasketItem')
+            ->setTable('RefundItem')
             ->addRels([
                 new Rel\BelongsTo('refund', $this, Refund::get()),
                 new Rel\BelongsTo('item', $this, BasketItem::get(), ['key' => 'refId']),

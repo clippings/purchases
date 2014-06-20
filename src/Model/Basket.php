@@ -2,89 +2,23 @@
 
 namespace CL\Purchases\Model;
 
-use Harp\Harp\AbstractModel;
-use Harp\Core\Model\Models;
 use CL\Purchases\Repo;
-use CL\Purchases\LinkMany;
-use SebastianBergmann\Money\Currency;
-use SebastianBergmann\Money\Money;
+use Harp\Transfer\Model\AbstractTransfer;
+use Harp\Money\Model\CurrencyTrait;
+use Harp\Timestamps\TimestampsModelTrait;
 use Omnipay\Common\GatewayInterface;
-use Omnipay\Common\Message\RequestInterface;
-use Omnipay\Common\Item;
-use Closure;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class Basket extends AbstractModel
+class Basket extends AbstractTransfer
 {
-    const PAYMENT_PENDING = 1;
-    const PAID = 2;
+    use TimestampsModelTrait;
+    use CurrencyTrait;
 
-    public $id;
-    public $currency = 'GBP';
-    public $status;
     public $billingId;
-    public $deletedAt;
-
-    public function loadData()
-    {
-        if (is_string($this->omnipay)) {
-            $this->omnipay = unserialize($this->omnipay);
-        }
-    }
-
-    public function getCurrency()
-    {
-        return new Currency($this->currency);
-    }
-
-    public function getTotal()
-    {
-        $prices = $this->getItems()->get()->map(function(BasketItem $item){
-            return $item->getPrice()->getAmount();
-        });
-
-        return new Money(array_sum($prices), $this->getCurrency());
-    }
-
-    public function getProductTotal()
-    {
-        $prices = $this->getItems()->onlyProduct()->map(function(ProductItem $item){
-            return $item->getPrice()->getAmount();
-        });
-
-        return new Money(array_sum($prices), $this->getCurrency());
-    }
-
-    public function getRefundTotal()
-    {
-        $prices = $this->getItems()->onlyRefund()->map(function(RefundItem $item){
-            return $item->getPrice()->getAmount();
-        });
-
-        return new Money(array_sum($prices), $this->getCurrency());
-    }
-
-    public function freeze()
-    {
-        foreach ($this->getItems() as $item) {
-            $item->freeze();
-        }
-
-        return $this;
-    }
-
-    public function unfreeze()
-    {
-        foreach ($this->getItems() as $item) {
-            $item->unfreeze();
-        }
-
-        return $this;
-    }
 
     public function getRepo()
     {
@@ -99,12 +33,16 @@ class Basket extends AbstractModel
         return $this->getLink('purchases');
     }
 
-    /**
-     * @return LinkMany\Items
-     */
     public function getItems()
     {
         return $this->getLink('items');
+    }
+
+    public function getProductItems()
+    {
+        return $this->getLink('items')->get()->filter(function (BasketItem $item) {
+            return $item instanceof ProductItem;
+        });
     }
 
     public function getBilling()
@@ -117,19 +55,9 @@ class Basket extends AbstractModel
         return $this->getLink('billing')->set($billing);
     }
 
-    public function isPaymentPending()
+    public function getRequestParameters(array $defaultParameters)
     {
-        return $this->status === self::PAYMENT_PENDING;
-    }
-
-    public function isPaid()
-    {
-        return $this->status === self::PAID;
-    }
-
-    public function getRequestParameters()
-    {
-        $parameters = [];
+        $parameters = parent::getRequestParameters($defaultParameters);
 
         $billing = $this->getBilling();
 
@@ -145,32 +73,49 @@ class Basket extends AbstractModel
             'email'     => $billing->email,
         ];
 
-        $items = [];
+        return array_merge_recursive($parameters, $defaultParameters);
+    }
 
-        foreach ($this->getItems() as $item) {
-            $parameters['items'] []= [
-                'name' => $item->getId(),
-                'description' => $item->getName(),
-                'price' => (float) ($item->getPrice()->getAmount() / 100),
-                'quantity' => $item->quantity,
-            ];
+    public function getPurchaseForStore(Store $store)
+    {
+        foreach ($this->getPurchases() as $purchase) {
+            if ($purchase->getStore() === $store) {
+                return $purchase;
+            }
         }
 
-        $parameters['amount'] = (float) ($this->getTotal()->getAmount() / 100);
-        $parameters['currency'] = $this->currency;
-        $parameters['transactionReference'] = $this->getId();
+        $purchase = new Purchase();
+        $purchase->setStore($store);
+        $purchase->setBasket($this);
+        $this->getPurchases()->add($purchase);
 
-        return $parameters;
+        return $purchase;
     }
 
     public function addProduct(Product $product, $quantity = 1)
     {
-        $item = $this->getItems()->addForProduct($product, $quantity);
+        foreach ($this->getProductItems() as $item) {
+            if ($item->getProduct() === $product) {
+                $item->quantity += $quantity;
+                return $this;
+            }
+        }
 
-        $purchase = $this->getPurchases()->addForStore($product->getStore());
+        $purchase = $this->getPurchaseForStore($product->getStore());
 
-        $purchase->getBasketItems()->add($item);
+        $item = new ProductItem(['quantity' => $quantity]);
+        $item->setBasket($this);
+        $item->setProduct($product);
+        $item->setPurchase($purchase);
+
+        $purchase->getItems()->add($item);
+        $this->getItems()->add($item);
 
         return $this;
+    }
+
+    public function purchase(GatewayInterface $gateway, array $parameters)
+    {
+        return $this->execute($gateway, 'purchase', $parameters);
     }
 }

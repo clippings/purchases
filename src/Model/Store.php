@@ -3,6 +3,7 @@
 namespace CL\Purchases\Model;
 
 use Harp\Harp\AbstractModel;
+use Harp\Core\Model\SoftDeleteTrait;
 use CL\Purchases\Repo;
 
 /**
@@ -12,14 +13,15 @@ use CL\Purchases\Repo;
  */
 class Store extends AbstractModel
 {
+    use SoftDeleteTrait;
+
+    public $id;
+    public $name;
+
     public function getRepo()
     {
         return Repo\Store::get();
     }
-
-    public $id;
-    public $name;
-    public $deletedAt;
 
     public function getProducts()
     {

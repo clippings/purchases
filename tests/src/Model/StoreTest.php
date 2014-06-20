@@ -48,7 +48,6 @@ class StoreTest extends AbstractTestCase
 
         $items = $store->getPurchases();
 
-        $this->assertInstanceOf('Harp\Core\Repo\LinkMany', $items);
         $this->assertEquals(Repo\Purchase::get(), $items->getRel()->getForeignRepo());
     }
 }

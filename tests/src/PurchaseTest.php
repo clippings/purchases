@@ -37,7 +37,7 @@ class PurchaseTest extends AbstractTestCase
 
         $parameters = [
             'card' => [
-                'number' => '4111111111111111',
+                'number' => '4242424242424242',
                 'expiryMonth' => 7,
                 'expiryYear' => 2014,
                 'cvv' => 123,
@@ -45,10 +45,10 @@ class PurchaseTest extends AbstractTestCase
             'clientIp' => '192.168.0.1',
         ];
 
-        $parameters = array_merge_recursive($parameters, $basket->getRequestParameters());
+        $response = $basket->purchase($gateway, $parameters);
 
-        $purchase = $gateway->purchase($parameters);
+        $this->assertTrue($response->isSuccessful());
 
-        var_dump($purchase->getAmount());
+        $this->assertEquals('Success', $response->getMessage());
     }
 }

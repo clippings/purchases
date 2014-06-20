@@ -2,7 +2,7 @@
 
 namespace CL\Purchases\Repo;
 
-use Harp\Harp\AbstractRepo;
+use Harp\Transfer\Repo\AbstractItem;
 use Harp\Harp\Rel;
 use CL\Purchases\Repo;
 
@@ -11,7 +11,7 @@ use CL\Purchases\Repo;
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class BasketItem extends AbstractRepo
+class BasketItem extends AbstractItem
 {
     public static function newInstance()
     {
@@ -20,11 +20,13 @@ class BasketItem extends AbstractRepo
 
     public function initialize()
     {
+        parent::initialize();
+
         $this
             ->setInherited(true)
-            ->setSoftDelete(true)
+            ->setTable('BasketItem')
             ->addRels([
-                new Rel\BelongsTo('basket', $this, Basket::get()),
+                new Rel\BelongsTo('basket', $this, Basket::get(), ['key' => 'transferId']),
                 new Rel\BelongsTo('purchase', $this, Purchase::get()),
                 new Rel\HasOne('refundItem', $this, RefundItem::get(), ['foreignKey' => 'refId']),
             ]);

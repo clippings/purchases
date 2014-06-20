@@ -75,9 +75,8 @@ class PurchaseTest extends AbstractTestCase
     {
         $product = new Purchase();
 
-        $items = $product->getBasketItems();
+        $items = $product->getItems();
 
-        $this->assertInstanceOf('Harp\Core\Repo\LinkMany', $items);
         $this->assertEquals(Repo\BasketItem::get(), $items->getRel()->getForeignRepo());
     }
 }

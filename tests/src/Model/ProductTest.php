@@ -49,29 +49,14 @@ class ProductTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::getBasketItems
+     * @covers ::getProductItems
      */
-    public function testItems()
+    public function testProductItems()
     {
         $product = new Product();
 
-        $items = $product->getBasketItems();
+        $items = $product->getProductItems();
 
-        $this->assertInstanceOf('Harp\Core\Repo\LinkMany', $items);
-    }
-
-    /**
-     * @covers ::getPrice
-     * @covers ::setPrice
-     */
-    public function testPrice()
-    {
-        $item = new Product(['price' => 100, 'currency' => 'EUR']);
-
-        $this->assertEquals(new Money(100, new Currency('EUR')), $item->getPrice());
-
-        $item->setPrice(new Money(2000, new Currency('EUR')));
-
-        $this->assertEquals(new Money(2000, new Currency('EUR')), $item->getPrice());
+        $this->assertContainsOnlyInstancesOf('CL\Purchases\Model\ProductItem', $items->toArray());
     }
 }

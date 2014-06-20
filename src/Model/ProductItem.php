@@ -3,7 +3,6 @@
 namespace CL\Purchases\Model;
 
 use CL\Purchases\Repo;
-use CL\CurrencyConvert\Converter;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -17,30 +16,14 @@ class ProductItem extends BasketItem
         return Repo\ProductItem::get();
     }
 
-    public function getName()
+    public function getDescription()
     {
         return $this->getProduct()->name;
     }
 
-    public function getPrice()
+    public function getSourceValue()
     {
-        if ($this->isFrozen) {
-            return parent::getPrice();
-        } else {
-            return $this->getProductPrice();
-        }
-    }
-
-    public function getProductPrice()
-    {
-        $price = $this->getProduct()->getPrice();
-        $currency = $this->getCurrency();
-
-        if ($currency != $price->getCurrency()) {
-            $price = Converter::get()->convert($price, $currency);
-        }
-
-        return $price;
+        return $this->getProduct()->getValue();
     }
 
     public function setProduct(Product $product)

@@ -4,75 +4,37 @@ namespace CL\Purchases\Model;
 
 use Harp\Harp\AbstractModel;
 use CL\Purchases\Repo;
-use SebastianBergmann\Money\Currency;
-use SebastianBergmann\Money\Money;
+use Harp\Transfer\Model\AbstractItem;
+use SebastianBergmann\Money;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class BasketItem extends AbstractModel
+class BasketItem extends AbstractItem
 {
-    public $id;
-    public $basketId;
-    public $refId;
-    public $quantity = 1;
-    public $price = 0;
-    public $isFrozen = false;
     public $class;
-    public $deletedAt;
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return 'Item';
-    }
+    public $purchaseId;
 
     public function getRepo()
     {
         return Repo\BasketItem::get();
     }
 
-    public function getPrice()
-    {
-        return new Money($this->price, $this->getCurrency());
-    }
-
     public function getCurrency()
     {
-        $currency = $this->getBasket()->currency;
-
-        return new Currency($currency);
+        return $this->getBasket()->getCurrency();
     }
 
-    public function freeze()
+    public function getSourceValue()
     {
-        if (! $this->isFrozen) {
-            $this->price = $this->getPrice()->getAmount();
-            $this->isFrozen = true;
-        }
-
-        return $this;
+        return new Money($this->value, $this->getCurrency());
     }
 
-    public function unfreeze()
+    public function getTotalValue()
     {
-        $this->isFrozen = false;
-
-        return $this;
-    }
-
-    public function setPrice(Money $price)
-    {
-        $this->price = $price->getAmount();
-    }
-
-    public function getTotalPrice()
-    {
-        return $this->getPrice()->multiply($this->quantity);
+        return $this->getValue()->multiply($this->quantity);
     }
 
     public function getPurchase()

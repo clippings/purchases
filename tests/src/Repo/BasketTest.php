@@ -27,9 +27,6 @@ class BasketTest extends AbstractTestCase
         $purchases = $basket->getRelOrError('purchases');
         $this->assertInstanceOf('CL\Purchases\Repo\Purchase', $purchases->getForeignRepo());
 
-        $refunds = $basket->getRelOrError('refunds');
-        $this->assertInstanceOf('CL\Purchases\Repo\Refund', $refunds->getForeignRepo());
-
         $model = $basket->newModel();
 
         $this->assertInstanceOf('CL\Purchases\Model\Basket', $model);

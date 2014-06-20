@@ -32,9 +32,6 @@ class Address extends AbstractModel
         return Repo\Address::get();
     }
 
-    /**
-     * @return Basket
-     */
     public function getBasket()
     {
         return $this->getLink('basket')->get();

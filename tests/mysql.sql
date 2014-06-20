@@ -17,10 +17,15 @@ CREATE TABLE `Address` (
 DROP TABLE IF EXISTS `Basket`;
 CREATE TABLE `Basket` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `omnipay` TEXT NULL,
+  `responseData` TEXT,
+  `completedAt` TIMESTAMP NULL,
+  `isSuccessful` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `billingId` int(11) UNSIGNED NULL,
   `currency` varchar(3) NULL,
-  `status` TINYINT(1) UNSIGNED NULL,
+  `value` int(11) NULL,
+  `isFrozen` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `createdAt` TIMESTAMP NULL,
+  `updatedAt` TIMESTAMP NULL,
   `deletedAt` TIMESTAMP NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -29,12 +34,23 @@ DROP TABLE IF EXISTS `BasketItem`;
 CREATE TABLE `BasketItem` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `class` varchar(255),
-  `basketId` int(11) UNSIGNED NULL,
+  `transferId` int(11) UNSIGNED NULL,
   `purchaseId` int(11) UNSIGNED NULL,
-  `refundId` int(11) UNSIGNED NULL,
   `refId` int(11) UNSIGNED NULL,
   `quantity` int(11) UNSIGNED NOT NULL DEFAULT 1,
-  `price` int(11) NULL,
+  `value` int(11) NULL,
+  `isFrozen` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `deletedAt` TIMESTAMP NULL,
+  PRIMARY KEY  (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+DROP TABLE IF EXISTS `RefundItem`;
+CREATE TABLE `RefundItem` (
+  `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `transferId` int(11) UNSIGNED NULL,
+  `refId` int(11) UNSIGNED NULL,
+  `quantity` int(11) UNSIGNED NOT NULL DEFAULT 1,
+  `value` int(11) NULL,
   `isFrozen` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `deletedAt` TIMESTAMP NULL,
   PRIMARY KEY  (`id`)
@@ -45,7 +61,7 @@ CREATE TABLE `Product` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `storeId` int(11) UNSIGNED NULL,
   `name` varchar(255),
-  `price` int(11) NULL,
+  `value` int(11) NULL,
   `currency` varchar(3) NULL,
   `deletedAt` TIMESTAMP NULL,
   PRIMARY KEY  (`id`)
@@ -55,6 +71,9 @@ DROP TABLE IF EXISTS `Purchase`;
 CREATE TABLE `Purchase` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `status` TINYINT(1) UNSIGNED NULL,
+  `isFrozen` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `currency` varchar(3) NULL,
+  `value` int(11) NULL,
   `basketId` int(11) UNSIGNED NULL,
   `storeId` int(11) UNSIGNED NULL,
   `deletedAt` TIMESTAMP NULL,
@@ -66,8 +85,13 @@ CREATE TABLE `Purchase` (
 DROP TABLE IF EXISTS `Refund`;
 CREATE TABLE `Refund` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `state` TINYINT(1) UNSIGNED NULL,
-  `basketId` int(11) UNSIGNED NULL,
+  `isSuccessful` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `isFrozen` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `currency` varchar(3) NULL,
+  `value` int(11) NULL,
+  `responseData` TEXT,
+  `purchaseId` int(11) UNSIGNED NULL,
+  `completedAt` TIMESTAMP NULL,
   `deletedAt` TIMESTAMP NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -102,20 +126,24 @@ VALUES
   (1, 'John', 'Doe', 'john@example.com', '123123', '1000', 'Moskovska', '132', 2, 1);
 
 INSERT INTO `Basket`
-(`id`, `omnipay`, `currency`, `status`, `billingId`, `deletedAt`)
+(`id`, `responseData`, `currency`, `isSuccessful`, `billingId`, `deletedAt`)
 VALUES
-  (1, NULL, 'GBP', 1, 1, NULL),
-  (2, NULL, 'GBP', 2, 0, NULL);
+  (1, '{"amount":"380.00","reference":"53a43cc327040","success":true,"message":"Success"}', 'GBP', 1, 1, NULL),
+  (2, NULL, 'GBP', 0, 0, NULL);
 
 INSERT INTO `BasketItem`
-(`id`, `class`, `basketId`, `purchaseId`, `refundId`, `refId`, `price`, `isFrozen`, `deletedAt`)
+(`id`, `class`, `transferId`, `purchaseId`, `refId`, `value`, `isFrozen`, `deletedAt`)
 VALUES
-  (1, 'CL\\Purchases\\Model\\ProductItem', 1, 1, NULL, 1, 1000,  1, NULL),
-  (2, 'CL\\Purchases\\Model\\ProductItem', 1, 1, NULL, 2, 2000,  1, NULL),
-  (3, 'CL\\Purchases\\Model\\ProductItem', 1, 1, NULL, 3, 3000,  1, NULL),
-  (4, 'CL\\Purchases\\Model\\ProductItem', 1, 2, NULL, 4, 4000,  1, NULL),
-  (5, 'CL\\Purchases\\Model\\RefundItem',  1, 2, 1,    4, -4000, 1, NULL),
-  (6, 'CL\\Purchases\\Model\\ProductItem', 1, 2, NULL, 5, 5000,  1, '2014-02-03 00:00:00');
+  (1, 'CL\\Purchases\\Model\\ProductItem', 1, 1, 1, 1000, 1, NULL),
+  (2, 'CL\\Purchases\\Model\\ProductItem', 1, 1, 2, 2000, 1, NULL),
+  (3, 'CL\\Purchases\\Model\\ProductItem', 1, 1, 3, 3000, 1, NULL),
+  (4, 'CL\\Purchases\\Model\\ProductItem', 1, 2, 4, 4000, 1, NULL),
+  (5, 'CL\\Purchases\\Model\\ProductItem', 1, 2, 5, 5000, 1, '2014-02-03 00:00:00');
+
+INSERT INTO `RefundItem`
+(`id`, `transferId`, `refId`, `value`, `isFrozen`, `deletedAt`)
+VALUES
+  (1, 1, 4, 4000, 1, NULL);
 
 INSERT INTO `Purchase`
 (`id`, `status`, `basketId`, `storeId`, `createdAt`, `updatedAt`, `deletedAt`)
@@ -124,7 +152,7 @@ VALUES
   (2, 2, 1, 1, '2014-01-03 10:00:00', '2014-06-03 12:00:00', NULL);
 
 INSERT INTO `Product`
-(`id`, `name`, `storeId`, `price`, `currency`, `deletedAt`)
+(`id`, `name`, `storeId`, `value`, `currency`, `deletedAt`)
 VALUES
   (1, 'Product 1', 1, 1000, 'GBP', NULL),
   (2, 'Product 2', 1, 2000, 'GBP', NULL),
@@ -135,9 +163,9 @@ VALUES
   (7, 'Product 7', 2, 7000, 'GBP', NULL);
 
 INSERT INTO `Refund`
-(`id`, `state`, `basketId`, `deletedAt`)
+(`id`, `responseData`, `isSuccessful`, `isFrozen`, `value`, `currency`, `purchaseId`, `deletedAt`)
 VALUES
-(1, 1, 1, NULL);
+(1, NULL, 1, 1, 4000, 'GBP', 1, NULL);
 
 INSERT INTO `Store`
 (`id`, `name`, `deletedAt`)

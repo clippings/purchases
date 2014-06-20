@@ -2,18 +2,22 @@
 
 namespace CL\Purchases\Repo;
 
-use Harp\Harp\AbstractRepo;
+use Harp\Transfer\Repo\AbstractTransfer;
+use Harp\Money\Repo\CurrencyTrait;
 use Harp\Harp\Rel;
 use Harp\Validate\Assert;
-use CL\Purchases\Repo;
+use Harp\Timestamps\TimestampsRepoTrait;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class Basket extends AbstractRepo
+class Basket extends AbstractTransfer
 {
+    use TimestampsRepoTrait;
+    use CurrencyTrait;
+
     public static function newInstance()
     {
         return new Basket('CL\Purchases\Model\Basket');
@@ -21,19 +25,13 @@ class Basket extends AbstractRepo
 
     public function initialize()
     {
+        parent::initialize();
+
         $this
-            ->setSoftDelete(true)
             ->addRels([
-                (new Rel\HasMany('items', $this, BasketItem::get()))
-                    ->setLinkClass('CL\Purchases\Collection\BasketItems'),
-                (new Rel\HasMany('purchases', $this, Purchase::get()))
-                    ->setLinkClass('CL\Purchases\Collection\Purchases'),
-                new Rel\HasMany('refunds', $this, Refund::get()),
+                new Rel\HasMany('items', $this, BasketItem::get(), ['foreignKey' => 'transferId']),
+                new Rel\HasMany('purchases', $this, Purchase::get()),
                 new Rel\BelongsTo('billing', $this, Address::get()),
-            ])
-            ->addAsserts([
-                new Assert\Present('currency'),
-                new Assert\LengthEquals('currency', 3),
             ]);
     }
 }

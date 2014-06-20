@@ -18,8 +18,8 @@ class RefundTest extends AbstractTestCase
     {
         $refund = Refund::newInstance();
 
-        $basket = $refund->getRelOrError('basket');
-        $this->assertInstanceOf('CL\Purchases\Repo\Basket', $basket->getForeignRepo());
+        $purchase = $refund->getRelOrError('purchase');
+        $this->assertInstanceOf('CL\Purchases\Repo\Purchase', $purchase->getForeignRepo());
 
         $items = $refund->getRelOrError('items');
         $this->assertInstanceOf('CL\Purchases\Repo\RefundItem', $items->getForeignRepo());

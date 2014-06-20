@@ -6,6 +6,8 @@ use Harp\Harp\AbstractRepo;
 use Harp\Harp\Rel;
 use Harp\Validate\Assert;
 use CL\Purchases\Repo;
+use Harp\Money\Repo\CurrencyTrait;
+use Harp\Money\Repo\ValueTrait;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -14,6 +16,9 @@ use CL\Purchases\Repo;
  */
 class Product extends AbstractRepo
 {
+    use CurrencyTrait;
+    use ValueTrait;
+
     public static function newInstance()
     {
         return new Product('CL\Purchases\Model\Product');
@@ -22,15 +27,16 @@ class Product extends AbstractRepo
     public function initialize()
     {
         $this
+            ->initializeCurrency()
+            ->initializeValue()
             ->setSoftDelete(true)
             ->addRels([
                 new Rel\BelongsTo('store', $this, Store::get()),
-                new Rel\HasMany('basketItems', $this, BasketItem::get()),
+                new Rel\HasMany('productItems', $this, ProductItem::get(), ['foreignKey' => 'refId']),
             ])
             ->addAsserts([
                 new Assert\Present('name'),
                 new Assert\LengthLessThan('name', 150),
-                new Assert\LengthEquals('currency', 3),
             ]);
     }
 }

@@ -50,18 +50,14 @@ class ProductItemTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::getPrice
+     * @covers ::getSourceValue
      */
-    public function testGetPrice()
+    public function testGetSourceValue()
     {
-        $item = new ProductItem(['price' => 100, 'isFrozen' => true]);
-        $item->setBasket(new Basket(['currency' => 'GBP']));
-        $item->setProduct(new Product(['currency' => 'EUR', 'price' => 2000]));
+        $item = new ProductItem();
+        $item->setBasket(new Basket());
+        $item->setProduct(new Product(['currency' => 'EUR', 'value' => 2000]));
 
-        $this->assertEquals(new Money(100, new Currency('GBP')), $item->getPrice());
-
-        $item->unfreeze();
-
-        $this->assertEquals(new Money(2000, new Currency('GBP')), $item->getPrice());
+        $this->assertEquals(new Money(2000, new Currency('EUR')), $item->getSourceValue());
     }
 }

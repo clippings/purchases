@@ -16,7 +16,11 @@
         },
         {
             "type": "vcs",
-            "url": "https://github.com/harp-orm/harp"
+            "url": "https://github.com/harp-orm/money"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/harp-orm/transfer"
         }
     ],
     "require": {
@@ -24,9 +28,12 @@
         "harp-orm/core": "dev-master",
         "harp-orm/query": "dev-master",
         "harp-orm/validate": "dev-master",
+        "harp-orm/serializer": "dev-master",
         "harp-orm/materialized-path": "dev-master",
         "harp-orm/locations": "dev-master",
         "harp-orm/timestamps": "dev-master",
+        "harp-orm/transfer": "dev-master",
+        "harp-orm/money": "dev-master",
         "sebastian/money": "~1.3",
         "clippings/currency-convert": "~0.1",
         "omnipay/dummy": "~2.0"

@@ -3,9 +3,10 @@
 namespace CL\Purchases\Model;
 
 use Harp\Harp\AbstractModel;
+use Harp\Money\Model\CurrencyTrait;
+use Harp\Money\Model\ValueTrait;
+use Harp\Core\Model\SoftDeleteTrait;
 use CL\Purchases\Repo;
-use SebastianBergmann\Money\Currency;
-use SebastianBergmann\Money\Money;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -14,32 +15,23 @@ use SebastianBergmann\Money\Money;
  */
 class Product extends AbstractModel
 {
+    use CurrencyTrait;
+    use ValueTrait;
+    use SoftDeleteTrait;
+
     public function getRepo()
     {
         return Repo\Product::get();
     }
 
     public $id;
+    public $name;
     public $storeId;
     public $title;
-    public $price = 0;
-    public $currency = 'GBP';
 
-    public function getPrice()
+    public function getProductItems()
     {
-        return new Money($this->price, new Currency($this->currency));
-    }
-
-    public function setPrice(Money $price)
-    {
-        $this->price = $price->getAmount();
-
-        return $this;
-    }
-
-    public function getBasketItems()
-    {
-        return $this->getLink('basketItems');
+        return $this->getLink('productItems');
     }
 
     public function getStore()

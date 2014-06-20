@@ -2,9 +2,7 @@
 
 namespace CL\Purchases\Repo;
 
-use Harp\Harp\AbstractRepo;
 use Harp\Harp\Rel;
-use CL\Purchases\Repo;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -23,7 +21,7 @@ class ProductItem extends BasketItem
         parent::initialize();
 
         $this
-            ->setTable('BasketItem')
+            ->setRootRepo(BasketItem::get())
             ->addRels([
                 new Rel\BelongsTo('product', $this, Product::get(), ['key' => 'refId']),
             ]);

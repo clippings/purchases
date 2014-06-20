@@ -24,8 +24,8 @@ class PurchaseTest extends AbstractTestCase
         $basket = $purchase->getRelOrError('basket');
         $this->assertInstanceOf('CL\Purchases\Repo\Basket', $basket->getForeignRepo());
 
-        $basketItems = $purchase->getRelOrError('basketItems');
-        $this->assertInstanceOf('CL\Purchases\Repo\BasketItem', $basketItems->getForeignRepo());
+        $items = $purchase->getRelOrError('items');
+        $this->assertInstanceOf('CL\Purchases\Repo\BasketItem', $items->getForeignRepo());
 
         $model = $purchase->newModel();
 

@@ -18,15 +18,6 @@ class RefundItemTest extends AbstractTestCase
     {
         $refundItem = RefundItem::newInstance();
 
-        $billing = $refundItem->getRelOrError('basket');
-        $this->assertInstanceOf('CL\Purchases\Repo\Basket', $billing->getForeignRepo());
-
-        $items = $refundItem->getRelOrError('purchase');
-        $this->assertInstanceOf('CL\Purchases\Repo\Purchase', $items->getForeignRepo());
-
-        $purchases = $refundItem->getRelOrError('refundItem');
-        $this->assertInstanceOf('CL\Purchases\Repo\RefundItem', $purchases->getForeignRepo());
-
         $refund = $refundItem->getRelOrError('refund');
         $this->assertInstanceOf('CL\Purchases\Repo\Refund', $refund->getForeignRepo());
 
