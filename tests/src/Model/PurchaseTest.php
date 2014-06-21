@@ -69,7 +69,7 @@ class PurchaseTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::getBasketItems
+     * @covers ::getItems
      */
     public function testItems()
     {

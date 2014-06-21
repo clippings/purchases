@@ -58,7 +58,7 @@ class RefundItem extends AbstractItem
      */
     public function getName()
     {
-        return $this->getItem()->getId();
+        return $this->getItem()->getName();
     }
 
     /**
@@ -66,9 +66,9 @@ class RefundItem extends AbstractItem
      */
     public function getDescription()
     {
-        $itemName = $this->getItem()->getName();
+        $description = $this->getItem()->getDescription();
 
-        return "Refund for {$itemName}";
+        return "Refund for {$description}";
     }
 
     /**

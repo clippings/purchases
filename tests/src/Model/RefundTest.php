@@ -76,12 +76,12 @@ class RefundTest extends AbstractTestCase
             'items' => [
                 [
                     'name' => 4,
-                    'description' => 'Refund for 4',
-                    'price' => 40,
+                    'description' => 'Refund for Product 4',
+                    'price' => 40.0,
                     'quantity' => 1,
                 ],
             ],
-            'amount' => 40,
+            'amount' => 40.0,
             'currency' => 'GBP',
             'transactionReference' => 1,
             'requestData' => [
@@ -92,7 +92,7 @@ class RefundTest extends AbstractTestCase
             ],
         ];
 
-        $this->assertEquals($expected, $data);
+        $this->assertSame($expected, $data);
     }
 
     /**
@@ -101,14 +101,17 @@ class RefundTest extends AbstractTestCase
     public function testCurrency()
     {
         $refund = new Refund();
-        $purchase = new Purchase();
+
+        $currency = new Currency('EUR');
+
+        $purchase = $this->getMock('CL\Purchases\Model\Purchase', ['getCurrency']);
+        $purchase
+            ->expects($this->once())
+            ->method('getCurrency')
+            ->will($this->returnValue($currency));
+
         $refund->setPurchase($purchase);
-        $purchase->setBasket(new Basket(['currency' => 'GBP']));
 
-        $this->assertEquals(new Currency('GBP'), $refund->getCurrency());
-
-        $purchase->setBasket(new Basket(['currency' => 'EUR']));
-
-        $this->assertEquals(new Currency('EUR'), $refund->getCurrency());
+        $this->assertSame($currency, $refund->getCurrency());
     }
 }

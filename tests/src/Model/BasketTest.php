@@ -53,6 +53,56 @@ class BasketTest extends AbstractTestCase
     }
 
     /**
+     * @covers ::performFreeze
+     */
+    public function testPerformFreeze()
+    {
+        $basket = new Basket();
+
+        $purchase1 = $this->getMock('CL\Purchases\Model\Purchase', ['freeze']);
+        $purchase1
+            ->expects($this->once())
+            ->method('freeze');
+
+        $purchase2 = $this->getMock('CL\Purchases\Model\Purchase', ['freeze']);
+        $purchase2
+            ->expects($this->once())
+            ->method('freeze');
+
+        $basket
+            ->getPurchases()
+                ->add($purchase1)
+                ->add($purchase2);
+
+        $basket->performFreeze();
+    }
+
+    /**
+     * @covers ::performUnfreeze
+     */
+    public function testPerformUnfreeze()
+    {
+        $basket = new Basket();
+
+        $purchase1 = $this->getMock('CL\Purchases\Model\Purchase', ['unfreeze']);
+        $purchase1
+            ->expects($this->once())
+            ->method('unfreeze');
+
+        $purchase2 = $this->getMock('CL\Purchases\Model\Purchase', ['unfreeze']);
+        $purchase2
+            ->expects($this->once())
+            ->method('unfreeze');
+
+        $basket
+            ->getPurchases()
+                ->add($purchase1)
+                ->add($purchase2);
+
+        $basket->performUnfreeze();
+    }
+
+    /**
      * @covers ::addProduct
      */
     public function testAddProduct()
@@ -116,6 +166,35 @@ class BasketTest extends AbstractTestCase
         $data = $basket->getRequestParameters(array());
 
         $expected = array(
+            'items' => [
+                [
+                    'name' => 1,
+                    'description' => 'Product 1',
+                    'price' => 10.0,
+                    'quantity' => 1,
+                ],
+                [
+                    'name' => 2,
+                    'description' => 'Product 2',
+                    'price' => 20.0,
+                    'quantity' => 1,
+                ],
+                [
+                    'name' => 3,
+                    'description' => 'Product 3',
+                    'price' => 30.0,
+                    'quantity' => 1,
+                ],
+                [
+                    'name' => 4,
+                    'description' => 'Product 4',
+                    'price' => 40.0,
+                    'quantity' => 1,
+                ],
+            ],
+            'amount' => 100.0,
+            'currency' => 'GBP',
+            'transactionReference' => 1,
             'card' => [
                 'firstName' => 'John',
                 'lastName' => 'Doe',
@@ -127,37 +206,8 @@ class BasketTest extends AbstractTestCase
                 'phone' => '123123',
                 'email' => 'john@example.com',
             ],
-            'items' => [
-                [
-                    'name' => 1,
-                    'description' => 'Product 1',
-                    'price' => 10,
-                    'quantity' => 1,
-                ],
-                [
-                    'name' => 2,
-                    'description' => 'Product 2',
-                    'price' => 20,
-                    'quantity' => 1,
-                ],
-                [
-                    'name' => 3,
-                    'description' => 'Product 3',
-                    'price' => 30,
-                    'quantity' => 1,
-                ],
-                [
-                    'name' => 4,
-                    'description' => 'Product 4',
-                    'price' => 40,
-                    'quantity' => 1,
-                ],
-            ],
-            'amount' => 100.00,
-            'currency' => 'GBP',
-            'transactionReference' => 1,
         );
 
-        $this->assertEquals($expected, $data);
+        $this->assertSame($expected, $data);
     }
 }

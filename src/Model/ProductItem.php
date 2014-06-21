@@ -35,19 +35,19 @@ class ProductItem extends BasketItem
         return $this->getProduct()->getValue();
     }
 
-    public function setProduct(Product $product)
     /**
      * @return Product
      */
+    public function getProduct()
     {
-        return $this->getLink('product')->set($product);
+        return $this->getLink('product')->get();
     }
 
-    public function getProduct()
     /**
      * @param Product $product
      */
+    public function setProduct(Product $product)
     {
-        return $this->getLink('product')->get();
+        return $this->getLink('product')->set($product);
     }
 }
