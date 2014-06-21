@@ -3,11 +3,10 @@
 namespace CL\Purchases\Test\Model;
 
 use CL\Purchases\Test\AbstractTestCase;
+use CL\Purchases\Model\Address;
 use CL\Purchases\Model\Basket;
-use CL\Purchases\Model\ProductItem;
 use CL\Purchases\Repo;
-use SebastianBergmann\Money\GBP;
-
+use Omnipay\Omnipay;
 
 /**
  * @coversDefaultClass CL\Purchases\Model\Basket
@@ -26,6 +25,26 @@ class BasketTest extends AbstractTestCase
 
         $this->assertSame($repo, $repo2);
         $this->assertInstanceOf('CL\Purchases\Model\Basket', $basket);
+    }
+
+    /**
+     * @covers ::getBilling
+     * @covers ::setBilling
+     */
+    public function testBilling()
+    {
+        $item = new Basket();
+
+        $billing = $item->getBilling();
+
+        $this->assertInstanceOf('CL\Purchases\Model\Address', $billing);
+        $this->assertTrue($billing->isVoid());
+
+        $billing = new Address();
+
+        $item->setBilling($billing);
+
+        $this->assertSame($billing, $item->getBilling());
     }
 
     /**
@@ -50,6 +69,20 @@ class BasketTest extends AbstractTestCase
         $items = $basket->getItems();
 
         $this->assertContainsOnlyInstancesOf('CL\Purchases\Model\BasketItem', $items->toArray());
+    }
+
+    /**
+     * @covers ::getProductItems
+     */
+    public function testProductItems()
+    {
+        $basket = Repo\Basket::get()->find(1);
+
+        $items = Repo\BasketItem::get()->findAll()->whereIn('id', [1, 2, 3, 4])->load();
+
+        $productItems = $basket->getProductItems();
+
+        $this->assertSame($items->toArray(), $productItems->toArray());
     }
 
     /**
@@ -137,6 +170,25 @@ class BasketTest extends AbstractTestCase
     }
 
     /**
+     * @covers ::getPurchaseForStore
+     */
+    public function testGetPurchaseForStore()
+    {
+        $basket = Repo\Basket::get()->find(2);
+        $store = Repo\Store::get()->find(1);
+
+        $purchase = $basket->getPurchaseForStore($store);
+
+        $this->assertInstanceOf('CL\Purchases\Model\Purchase', $purchase);
+        $this->assertSame($store, $purchase->getStore());
+        $this->assertSame($basket, $purchase->getBasket());
+        $this->assertTrue($basket->getPurchases()->has($purchase));
+
+        $purchase2 = $basket->getPurchaseForStore($store);
+        $this->assertSame($purchase2, $purchase);
+    }
+
+    /**
      * @coversNothing
      */
     public function testIntegration()
@@ -159,6 +211,9 @@ class BasketTest extends AbstractTestCase
         $this->assertSame($billing, $basket->getBilling());
     }
 
+    /**
+     * @covers ::getRequestParameters
+     */
     public function testGetRequestParameters()
     {
         $basket  = Repo\Basket::get()->find(1);
@@ -209,5 +264,61 @@ class BasketTest extends AbstractTestCase
         );
 
         $this->assertSame($expected, $data);
+    }
+
+    /**
+     * @covers ::purchase
+     */
+    public function testPurchase()
+    {
+        $gateway = Omnipay::getFactory()->create('Dummy');
+
+        $basket = $this->getMock('CL\Purchases\Model\Basket', ['execute']);
+
+        $params = ['test', 'test2'];
+
+        $response = 'result response';
+
+        $basket
+            ->expects($this->once())
+            ->method('execute')
+            ->with(
+                $this->identicalTo($gateway),
+                $this->equalTo('purchase'),
+                $this->equalTo($params)
+            )
+            ->will($this->returnValue($response));
+
+        $result = $basket->purchase($gateway, $params);
+
+        $this->assertEquals($response, $result);
+    }
+
+    /**
+     * @covers ::complete
+     */
+    public function testComplete()
+    {
+        $gateway = Omnipay::getFactory()->create('Dummy');
+
+        $basket = $this->getMock('CL\Purchases\Model\Basket', ['execute']);
+
+        $params = ['test', 'test2'];
+
+        $response = 'result response';
+
+        $basket
+            ->expects($this->once())
+            ->method('execute')
+            ->with(
+                $this->identicalTo($gateway),
+                $this->equalTo('complete'),
+                $this->equalTo($params)
+            )
+            ->will($this->returnValue($response));
+
+        $result = $basket->complete($gateway, $params);
+
+        $this->assertEquals($response, $result);
     }
 }

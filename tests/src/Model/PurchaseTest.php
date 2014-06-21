@@ -7,7 +7,7 @@ use CL\Purchases\Model\Store;
 use CL\Purchases\Model\Basket;
 use CL\Purchases\Repo;
 use CL\Purchases\Model\Purchase;
-
+use SebastianBergmann\Money\Currency;
 
 /**
  * @coversDefaultClass CL\Purchases\Model\Purchase
@@ -78,5 +78,37 @@ class PurchaseTest extends AbstractTestCase
         $items = $product->getItems();
 
         $this->assertEquals(Repo\BasketItem::get(), $items->getRel()->getForeignRepo());
+    }
+
+    /**
+     * @covers ::getRefunds
+     */
+    public function testRefunds()
+    {
+        $product = new Purchase();
+
+        $refunds = $product->getRefunds();
+
+        $this->assertEquals(Repo\Refund::get(), $refunds->getRel()->getForeignRepo());
+    }
+
+    /**
+     * @covers ::getCurrency
+     */
+    public function testCurrency()
+    {
+        $purchase = new Purchase();
+
+        $currency = new Currency('EUR');
+
+        $basket = $this->getMock('CL\Purchases\Model\Basket', ['getCurrency']);
+        $basket
+            ->expects($this->once())
+            ->method('getCurrency')
+            ->will($this->returnValue($currency));
+
+        $purchase->setBasket($basket);
+
+        $this->assertSame($currency, $purchase->getCurrency());
     }
 }

@@ -60,4 +60,16 @@ class ProductItemTest extends AbstractTestCase
 
         $this->assertEquals(new Money(2000, new Currency('EUR')), $item->getSourceValue());
     }
+
+    /**
+     * @covers ::getDescription
+     */
+    public function testGetDescription()
+    {
+        $item = new ProductItem();
+
+        $item->setProduct(new Product(['name' => 'test name']));
+
+        $this->assertEquals('test name', $item->getDescription());
+    }
 }

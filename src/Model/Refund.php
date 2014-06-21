@@ -74,6 +74,6 @@ class Refund extends AbstractTransfer
      */
     public function refund(GatewayInterface $refund, array $parameters)
     {
-        $this->execute($refund, 'refund', $parameters);
+        return $this->execute($refund, 'refund', $parameters);
     }
 }

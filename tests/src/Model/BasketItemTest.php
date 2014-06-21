@@ -7,9 +7,8 @@ use CL\Purchases\Model\BasketItem;
 use CL\Purchases\Model\Purchase;
 use CL\Purchases\Model\Basket;
 use CL\Purchases\Repo;
-use SebastianBergmann\Money\EUR;
-use SebastianBergmann\Money\GBP;
-
+use SebastianBergmann\Money\Money;
+use SebastianBergmann\Money\Currency;
 
 /**
  * @coversDefaultClass CL\Purchases\Model\BasketItem
@@ -81,5 +80,57 @@ class BasketItemTest extends AbstractTestCase
 
         $this->assertSame($basket, $basketItem->getBasket());
         $this->assertSame($purchase, $basketItem->getPurchase());
+    }
+
+    /**
+     * @covers ::getCurrency
+     */
+    public function testCurrency()
+    {
+        $item = new BasketItem();
+
+        $currency = new Currency('EUR');
+
+        $basket = $this->getMock('CL\Purchases\Model\Basket', ['getCurrency']);
+        $basket
+            ->expects($this->once())
+            ->method('getCurrency')
+            ->will($this->returnValue($currency));
+
+        $item->setBasket($basket);
+
+        $this->assertSame($currency, $item->getCurrency());
+    }
+
+    /**
+     * @covers ::getSourceValue
+     */
+    public function testSourceValue()
+    {
+        $item = new BasketItem(['value' => 1000]);
+
+        $value = new Money(1000, new Currency('GBP'));
+
+        $this->assertEquals($value, $item->getSourceValue());
+    }
+
+    /**
+     * @covers ::getTotalValue
+     */
+    public function testTotalValue()
+    {
+        $item = new BasketItem(['quantity' => 3]);
+
+        $value = new Money(1000, new Currency('EUR'));
+
+        $item = $this->getMock('CL\Purchases\Model\BasketItem', ['getValue'], [['quantity' => 3]]);
+        $item
+            ->expects($this->once())
+            ->method('getValue')
+            ->will($this->returnValue($value));
+
+        $expected = new Money(3000, new Currency('EUR'));
+
+        $this->assertEquals($expected, $item->getTotalValue());
     }
 }

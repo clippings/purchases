@@ -3,14 +3,12 @@
 namespace CL\Purchases\Test\Model;
 
 use CL\Purchases\Test\AbstractTestCase;
-use CL\Purchases\Model\Store;
-use CL\Purchases\Model\Basket;
 use CL\Purchases\Model\Purchase;
 use CL\Purchases\Model\Refund;
-use CL\Purchases\Model\RefundItem;
 use CL\Purchases\Repo;
 use SebastianBergmann\Money\Money;
 use SebastianBergmann\Money\Currency;
+use Omnipay\Omnipay;
 
 /**
  * @coversDefaultClass CL\Purchases\Model\Refund
@@ -113,5 +111,33 @@ class RefundTest extends AbstractTestCase
         $refund->setPurchase($purchase);
 
         $this->assertSame($currency, $refund->getCurrency());
+    }
+
+    /**
+     * @covers ::refund
+     */
+    public function testRefund()
+    {
+        $gateway = Omnipay::getFactory()->create('Dummy');
+
+        $refund = $this->getMock('CL\Purchases\Model\Refund', ['execute']);
+
+        $params = ['test', 'test2'];
+
+        $response = 'result response';
+
+        $refund
+            ->expects($this->once())
+            ->method('execute')
+            ->with(
+                $this->identicalTo($gateway),
+                $this->equalTo('refund'),
+                $this->equalTo($params)
+            )
+            ->will($this->returnValue($response));
+
+        $result = $refund->refund($gateway, $params);
+
+        $this->assertEquals($response, $result);
     }
 }
