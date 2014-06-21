@@ -17,6 +17,7 @@ CREATE TABLE `Address` (
 DROP TABLE IF EXISTS `Basket`;
 CREATE TABLE `Basket` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uniqueKey` varchar(100),
   `responseData` TEXT,
   `completedAt` TIMESTAMP NULL,
   `isSuccessful` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
@@ -70,6 +71,7 @@ CREATE TABLE `Product` (
 DROP TABLE IF EXISTS `Purchase`;
 CREATE TABLE `Purchase` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `uniqueKey` varchar(100),
   `status` TINYINT(1) UNSIGNED NULL,
   `isFrozen` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `currency` varchar(3) NULL,
@@ -126,10 +128,10 @@ VALUES
   (1, 'John', 'Doe', 'john@example.com', '123123', '1000', 'Moskovska', '132', 2, 1);
 
 INSERT INTO `Basket`
-(`id`, `responseData`, `currency`, `isSuccessful`, `billingId`, `deletedAt`)
+(`id`, `uniqueKey`, `responseData`, `currency`, `isSuccessful`, `billingId`, `deletedAt`)
 VALUES
-  (1, '{"amount":"380.00","reference":"53a43cc327040","success":true,"message":"Success"}', 'GBP', 1, 1, NULL),
-  (2, NULL, 'GBP', 0, 0, NULL);
+  (1, 'FH2WO3EH', '{"amount":"380.00","reference":"53a43cc327040","success":true,"message":"Success"}', 'GBP', 1, 1, NULL),
+  (2, 'FVNDWZEH', NULL, 'GBP', 0, 0, NULL);
 
 INSERT INTO `BasketItem`
 (`id`, `class`, `transferId`, `purchaseId`, `refId`, `value`, `isFrozen`, `deletedAt`)
@@ -146,10 +148,10 @@ VALUES
   (1, 1, 4, 4000, 1, NULL);
 
 INSERT INTO `Purchase`
-(`id`, `status`, `basketId`, `storeId`, `createdAt`, `updatedAt`, `deletedAt`)
+(`id`, `uniqueKey`, `status`, `basketId`, `storeId`, `createdAt`, `updatedAt`, `deletedAt`)
 VALUES
-  (1, 2, 1, 1, '2014-01-03 10:00:00', '2014-03-03 12:00:00', NULL),
-  (2, 2, 1, 1, '2014-01-03 10:00:00', '2014-06-03 12:00:00', NULL);
+  (1, '32NDWZEH', 2, 1, 1, '2014-01-03 10:00:00', '2014-03-03 12:00:00', NULL),
+  (2, 'QTEOCKJT', 2, 1, 1, '2014-01-03 10:00:00', '2014-06-03 12:00:00', NULL);
 
 INSERT INTO `Product`
 (`id`, `name`, `storeId`, `value`, `currency`, `deletedAt`)

@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cf45ad4dd4e009d00e57387f3d3c0a04",
+    "hash": "3635364014f32a03ebadebc6c6eba03b",
     "packages": [
         {
             "name": "clippings/currency-convert",
@@ -334,12 +334,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/harp-orm/core.git",
-                "reference": "294e2d4f8a57fd1b50a5232b3d6c24d8884e47af"
+                "reference": "f85d2daee32b82aa0203c915be06aa2464f2eaf5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/harp-orm/core/zipball/294e2d4f8a57fd1b50a5232b3d6c24d8884e47af",
-                "reference": "294e2d4f8a57fd1b50a5232b3d6c24d8884e47af",
+                "url": "https://api.github.com/repos/harp-orm/core/zipball/f85d2daee32b82aa0203c915be06aa2464f2eaf5",
+                "reference": "f85d2daee32b82aa0203c915be06aa2464f2eaf5",
                 "shasum": ""
             },
             "require": {
@@ -373,7 +373,7 @@
                 "source": "https://github.com/harp-orm/core/tree/master",
                 "issues": "https://github.com/harp-orm/core/issues"
             },
-            "time": "2014-06-20 14:55:15"
+            "time": "2014-06-21 11:38:40"
         },
         {
             "name": "harp-orm/harp",
@@ -608,6 +608,49 @@
             "time": "2014-06-02 15:45:36"
         },
         {
+            "name": "harp-orm/random-key",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/harp-orm/random-key.git",
+                "reference": "91267434d1550239187b62e20c9ed39d4f505108"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/harp-orm/random-key/zipball/91267434d1550239187b62e20c9ed39d4f505108",
+                "reference": "91267434d1550239187b62e20c9ed39d4f505108",
+                "shasum": ""
+            },
+            "require": {
+                "harp-orm/core": "dev-master",
+                "harp-orm/harp": "dev-master",
+                "harp-orm/query": "dev-master",
+                "harp-orm/serializer": "dev-master",
+                "harp-orm/validate": "dev-master",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Harp\\RandomKey\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Ivan Kerin",
+                    "email": "ikerin@gmail.com",
+                    "homepage": "http://www.openbuildings.com",
+                    "role": "Author"
+                }
+            ],
+            "description": "Generate a random key for a model property",
+            "time": "2014-06-21 15:21:42"
+        },
+        {
             "name": "harp-orm/serializer",
             "version": "dev-master",
             "source": {
@@ -648,18 +691,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/harp-orm/timestamps.git",
-                "reference": "2edeed4a8f9faa5d668531f1628ff8d25846ca57"
+                "reference": "d7027f5a1e2f5ad902430bea361a699c8ca2fa04"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/harp-orm/timestamps/zipball/2edeed4a8f9faa5d668531f1628ff8d25846ca57",
-                "reference": "2edeed4a8f9faa5d668531f1628ff8d25846ca57",
+                "url": "https://api.github.com/repos/harp-orm/timestamps/zipball/d7027f5a1e2f5ad902430bea361a699c8ca2fa04",
+                "reference": "d7027f5a1e2f5ad902430bea361a699c8ca2fa04",
                 "shasum": ""
             },
             "require": {
                 "harp-orm/core": "dev-master",
                 "harp-orm/harp": "dev-master",
                 "harp-orm/query": "dev-master",
+                "harp-orm/serializer": "dev-master",
                 "harp-orm/validate": "dev-master",
                 "php": ">=5.4.0"
             },
@@ -685,7 +729,7 @@
                 }
             ],
             "description": "Automatic createdAt and updatedAt properties",
-            "time": "2014-06-20 07:09:54"
+            "time": "2014-06-21 15:25:38"
         },
         {
             "name": "harp-orm/util",
@@ -1129,6 +1173,7 @@
         "harp-orm/locations": 20,
         "harp-orm/timestamps": 20,
         "harp-orm/money": 20,
+        "harp-orm/random-key": 20,
         "clippings/transfer": 20
     },
     "platform": [

@@ -7,6 +7,7 @@ use Harp\Money\Repo\CurrencyTrait;
 use Harp\Harp\Rel;
 use Harp\Validate\Assert;
 use Harp\Timestamps\Repo\TimestampsTrait;
+use Harp\RandomKey\Repo\RandomKeyTrait;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -15,6 +16,7 @@ use Harp\Timestamps\Repo\TimestampsTrait;
  */
 class Basket extends AbstractTransfer
 {
+    use RandomKeyTrait;
     use TimestampsTrait;
     use CurrencyTrait;
 
@@ -29,6 +31,7 @@ class Basket extends AbstractTransfer
 
         $this
             ->initializeTimestamps()
+            ->initializeRandomKey()
             ->addRels([
                 new Rel\HasMany('items', $this, BasketItem::get(), ['foreignKey' => 'transferId']),
                 new Rel\HasMany('purchases', $this, Purchase::get()),

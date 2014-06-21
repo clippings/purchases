@@ -4,6 +4,7 @@ namespace CL\Purchases\Model;
 
 use Harp\Harp\AbstractModel;
 use Harp\Timestamps\Model\TimestampsTrait;
+use Harp\RandomKey\Model\RandomKeyTrait;
 use CL\Transfer\Model\AbstractItemGroup;
 use CL\Purchases\Repo;
 
@@ -15,6 +16,7 @@ use CL\Purchases\Repo;
 class Purchase extends AbstractItemGroup
 {
     use TimestampsTrait;
+    use RandomKeyTrait;
 
     public $basketId;
     public $storeId;

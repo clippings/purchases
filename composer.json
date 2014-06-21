@@ -33,7 +33,8 @@
         "harp-orm/locations": "dev-master",
         "harp-orm/timestamps": "dev-master",
         "harp-orm/money": "dev-master",
-        "sebastian/money": "~1.3",
+        "harp-orm/random-key": "dev-master",
+        "clippings/transfer": "dev-master",
         "clippings/transfer": "dev-master",
         "clippings/currency-convert": "~0.1",
         "omnipay/dummy": "~2.0"
