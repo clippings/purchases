@@ -3,7 +3,7 @@
 namespace CL\Purchases\Model;
 
 use Harp\Harp\AbstractModel;
-use Harp\Timestamps\TimestampsModelTrait;
+use Harp\Timestamps\Model\TimestampsTrait;
 use CL\Transfer\Model\AbstractItemGroup;
 use CL\Purchases\Repo;
 
@@ -14,7 +14,7 @@ use CL\Purchases\Repo;
  */
 class Purchase extends AbstractItemGroup
 {
-    use TimestampsModelTrait;
+    use TimestampsTrait;
 
     public $basketId;
     public $storeId;

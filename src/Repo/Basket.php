@@ -6,7 +6,7 @@ use CL\Transfer\Repo\AbstractTransfer;
 use Harp\Money\Repo\CurrencyTrait;
 use Harp\Harp\Rel;
 use Harp\Validate\Assert;
-use Harp\Timestamps\TimestampsRepoTrait;
+use Harp\Timestamps\Repo\TimestampsTrait;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -15,7 +15,7 @@ use Harp\Timestamps\TimestampsRepoTrait;
  */
 class Basket extends AbstractTransfer
 {
-    use TimestampsRepoTrait;
+    use TimestampsTrait;
     use CurrencyTrait;
 
     public static function newInstance()
@@ -28,6 +28,7 @@ class Basket extends AbstractTransfer
         parent::initialize();
 
         $this
+            ->initializeTimestamps()
             ->addRels([
                 new Rel\HasMany('items', $this, BasketItem::get(), ['foreignKey' => 'transferId']),
                 new Rel\HasMany('purchases', $this, Purchase::get()),

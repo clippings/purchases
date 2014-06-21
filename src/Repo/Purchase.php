@@ -3,7 +3,7 @@
 namespace CL\Purchases\Repo;
 
 use CL\Transfer\Repo\AbstractTransfer;
-use Harp\Timestamps\TimestampsRepoTrait;
+use Harp\Timestamps\Repo\TimestampsTrait;
 use Harp\Harp\Rel;
 
 /**
@@ -13,7 +13,7 @@ use Harp\Harp\Rel;
  */
 class Purchase extends AbstractTransfer
 {
-    use TimestampsRepoTrait;
+    use TimestampsTrait;
 
     public static function newInstance()
     {

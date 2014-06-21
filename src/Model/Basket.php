@@ -5,7 +5,7 @@ namespace CL\Purchases\Model;
 use CL\Purchases\Repo;
 use CL\Transfer\Model\AbstractTransfer;
 use Harp\Money\Model\CurrencyTrait;
-use Harp\Timestamps\TimestampsModelTrait;
+use Harp\Timestamps\Model\TimestampsTrait;
 use Omnipay\Common\GatewayInterface;
 
 /**
@@ -15,7 +15,7 @@ use Omnipay\Common\GatewayInterface;
  */
 class Basket extends AbstractTransfer
 {
-    use TimestampsModelTrait;
+    use TimestampsTrait;
     use CurrencyTrait;
 
     public $billingId;
