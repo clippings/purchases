@@ -26,18 +26,24 @@ class Basket extends AbstractTransfer
     }
 
     /**
-     * @return LinkMany\Purchases
+     * @return \Harp\Core\Repo\LinkMany
      */
     public function getPurchases()
     {
         return $this->getLink('purchases');
     }
 
+    /**
+     * @return \Harp\Core\Repo\LinkMany
+     */
     public function getItems()
     {
         return $this->getLink('items');
     }
 
+    /**
+     * @return \Harp\Core\Model\Models
+     */
     public function getProductItems()
     {
         return $this->getLink('items')->get()->filter(function (BasketItem $item) {
@@ -45,6 +51,9 @@ class Basket extends AbstractTransfer
         });
     }
 
+    /**
+     * Freeze all items and purchases
+     */
     public function performFreeze()
     {
         parent::performFreeze();
@@ -54,6 +63,9 @@ class Basket extends AbstractTransfer
         }
     }
 
+    /**
+     * Unfreeze all items and purchases
+     */
     public function performUnfreeze()
     {
         parent::performUnfreeze();
@@ -63,16 +75,26 @@ class Basket extends AbstractTransfer
         }
     }
 
+    /**
+     * @return Address
+     */
     public function getBilling()
     {
         return $this->getLink('billing')->get();
     }
 
+    /**
+     * @param Address $billing
+     */
     public function setBilling(Address $billing)
     {
         return $this->getLink('billing')->set($billing);
     }
 
+    /**
+     * @param  array  $defaultParameters
+     * @return array
+     */
     public function getRequestParameters(array $defaultParameters)
     {
         $parameters = parent::getRequestParameters($defaultParameters);
@@ -94,6 +116,11 @@ class Basket extends AbstractTransfer
         return array_merge_recursive($parameters, $defaultParameters);
     }
 
+    /**
+     * Find a purchase for the given Store or create a new one
+     * @param  Store  $store
+     * @return Purchase
+     */
     public function getPurchaseForStore(Store $store)
     {
         foreach ($this->getPurchases() as $purchase) {
@@ -110,6 +137,13 @@ class Basket extends AbstractTransfer
         return $purchase;
     }
 
+    /**
+     * Add a ProductItem for the given product / quantity.
+     * If product item exists, increase the quantity
+     *
+     * @param Product $product
+     * @param integer $quantity
+     */
     public function addProduct(Product $product, $quantity = 1)
     {
         foreach ($this->getProductItems() as $item) {
@@ -132,11 +166,21 @@ class Basket extends AbstractTransfer
         return $this;
     }
 
+    /**
+     * @param  GatewayInterface $gateway
+     * @param  array            $parameters
+     * @return \Omnipay\Common\Message\ResponseInterface
+     */
     public function purchase(GatewayInterface $gateway, array $parameters)
     {
         return $this->execute($gateway, 'purchase', $parameters);
     }
 
+    /**
+     * @param  GatewayInterface $gateway
+     * @param  array            $parameters
+     * @return \Omnipay\Common\Message\ResponseInterface
+     */
     public function complete(GatewayInterface $gateway, array $parameters)
     {
         return $this->execute($gateway, 'complete', $parameters);

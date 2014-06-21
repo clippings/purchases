@@ -18,16 +18,25 @@ class Store extends AbstractModel
     public $id;
     public $name;
 
+    /**
+     * @return Repo\Store
+     */
     public function getRepo()
     {
         return Repo\Store::get();
     }
 
+    /**
+     * @return \Harp\Core\Repo\LinkMany
+     */
     public function getProducts()
     {
         return $this->getLink('products');
     }
 
+    /**
+     * @return \Harp\Core\Repo\LinkMany
+     */
     public function getPurchases()
     {
         return $this->getLink('purchases');

@@ -19,6 +19,9 @@ class Product extends AbstractModel
     use ValueTrait;
     use SoftDeleteTrait;
 
+    /**
+     * @return Repo\Product
+     */
     public function getRepo()
     {
         return Repo\Product::get();
@@ -29,16 +32,25 @@ class Product extends AbstractModel
     public $storeId;
     public $title;
 
+    /**
+     * @return \Harp\Core\Repo\LinkMany
+     */
     public function getProductItems()
     {
         return $this->getLink('productItems');
     }
 
+    /**
+     * @return Store
+     */
     public function getStore()
     {
         return $this->getLink('store')->get();
     }
 
+    /**
+     * @param Store $store
+     */
     public function setStore(Store $store)
     {
         $this->getLink('store')->set($store);

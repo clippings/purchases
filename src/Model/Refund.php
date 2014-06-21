@@ -16,31 +16,50 @@ class Refund extends AbstractTransfer
 {
     public $purchaseId;
 
+    /**
+     * @return Repo\Refund
+     */
     public function getRepo()
     {
         return Repo\Refund::get();
     }
 
+    /**
+     * @return \SebastianBergmann\Money\Currency
+     */
     public function getCurrency()
     {
         return $this->getPurchase()->getCurrency();
     }
 
+    /**
+     * @return Purchase
+     */
     public function getPurchase()
     {
         return $this->getLink('purchase')->get();
     }
 
+    /**
+     * @param Purchase $purchase
+     */
     public function setPurchase(Purchase $purchase)
     {
         return $this->getLink('purchase')->set($purchase);
     }
 
+    /**
+     * @return \Harp\Core\Repo\LinkMany
+     */
     public function getItems()
     {
         return $this->getLink('items');
     }
 
+    /**
+     * @param  array  $defaultParameters
+     * @return array
+     */
     public function getRequestParameters(array $defaultParameters)
     {
         $defaultParameters['requestData'] = $this->getPurchase()->getBasket()->responseData;
@@ -48,6 +67,11 @@ class Refund extends AbstractTransfer
         return parent::getRequestParameters($defaultParameters);
     }
 
+    /**
+     * @param  GatewayInterface $refund
+     * @param  array            $parameters
+     * @return \Omnipay\Common\Message\ResponseInterface
+     */
     public function refund(GatewayInterface $refund, array $parameters)
     {
         $this->execute($refund, 'refund', $parameters);

@@ -27,36 +27,57 @@ class Address extends AbstractModel
     public $cityId;
     public $countryId;
 
+    /**
+     * @return Repo\Address
+     */
     public function getRepo()
     {
         return Repo\Address::get();
     }
 
+    /**
+     * @return Basket
+     */
     public function getBasket()
     {
         return $this->getLink('basket')->get();
     }
 
+    /**
+     * @param Basket $basket
+     */
     public function setBasket(Basket $basket)
     {
         return $this->getLink('basket')->set($basket);
     }
 
+    /**
+     * @return City
+     */
     public function getCity()
     {
         return $this->getLink('city')->get();
     }
 
+    /**
+     * @param City $city
+     */
     public function setCity(City $city)
     {
         return $this->getLink('city')->set($city);
     }
 
+    /**
+     * @return Country
+     */
     public function getCountry()
     {
         return $this->getLink('country')->get();
     }
 
+    /**
+     * @param Country $country
+     */
     public function setCountry(Country $country)
     {
         return $this->getLink('country')->set($country);

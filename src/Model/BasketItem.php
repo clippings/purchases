@@ -5,7 +5,7 @@ namespace CL\Purchases\Model;
 use Harp\Harp\AbstractModel;
 use CL\Purchases\Repo;
 use CL\Transfer\Model\AbstractItem;
-use SebastianBergmann\Money;
+use SebastianBergmann\Money\Money;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -17,41 +17,66 @@ class BasketItem extends AbstractItem
     public $class;
     public $purchaseId;
 
+    /**
+     * @return Repo\BasketItem
+     */
     public function getRepo()
     {
         return Repo\BasketItem::get();
     }
 
+    /**
+     * @return \SebastianBergmann\Money\Currency
+     */
     public function getCurrency()
     {
         return $this->getBasket()->getCurrency();
     }
 
+    /**
+     * @return Money
+     */
     public function getSourceValue()
     {
         return new Money($this->value, $this->getCurrency());
     }
 
+    /**
+     * Value * Quantity
+     * @return Money
+     */
     public function getTotalValue()
     {
         return $this->getValue()->multiply($this->quantity);
     }
 
+    /**
+     * @return Purchase
+     */
     public function getPurchase()
     {
         return $this->getLink('purchase')->get();
     }
 
+    /**
+     * @param Purchase $purchase
+     */
     public function setPurchase(Purchase $purchase)
     {
         return $this->getLink('purchase')->set($purchase);
     }
 
+    /**
+     * @return Basket
+     */
     public function getBasket()
     {
         return $this->getLink('basket')->get();
     }
 
+    /**
+     * @param Basket $basket
+     */
     public function setBasket(Basket $basket)
     {
         return $this->getLink('basket')->set($basket);

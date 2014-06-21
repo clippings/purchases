@@ -13,36 +13,57 @@ use CL\Transfer\Model\AbstractItem;
  */
 class RefundItem extends AbstractItem
 {
+    /**
+     * @return Repo\RefundItem
+     */
     public function getRepo()
     {
         return Repo\RefundItem::get();
     }
 
+    /**
+     * @return Refund
+     */
     public function getRefund()
     {
         return $this->getLink('refund')->get();
     }
 
+    /**
+     * @param Refund $refund
+     */
     public function setRefund(Refund $refund)
     {
         return $this->getLink('refund')->set($refund);
     }
 
+    /**
+     * @return Item
+     */
     public function getItem()
     {
         return $this->getLink('item')->get();
     }
 
+    /**
+     * @param BasketItem $item
+     */
     public function setItem(BasketItem $item)
     {
         return $this->getLink('item')->set($item);
     }
 
+    /**
+     * @return string
+     */
     public function getName()
     {
         return $this->getItem()->getId();
     }
 
+    /**
+     * @return string
+     */
     public function getDescription()
     {
         $itemName = $this->getItem()->getName();
@@ -50,11 +71,17 @@ class RefundItem extends AbstractItem
         return "Refund for {$itemName}";
     }
 
+    /**
+     * @return \SebastianBergmann\Money\Currency
+     */
     public function getCurrency()
     {
         return $this->getRefund()->getCurrency();
     }
 
+    /**
+     * @return \SebastianBergmann\Money\Money
+     */
     public function getSourceValue()
     {
         return $this->getItem()->getValue();
