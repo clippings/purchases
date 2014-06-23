@@ -3,6 +3,7 @@
 namespace CL\Purchases\Model;
 
 use Harp\Harp\AbstractModel;
+use Harp\Core\Model\InheritedTrait;
 use CL\Purchases\Repo;
 use CL\Transfer\Model\AbstractItem;
 use SebastianBergmann\Money\Money;
@@ -14,7 +15,8 @@ use SebastianBergmann\Money\Money;
  */
 class BasketItem extends AbstractItem
 {
-    public $class;
+    use InheritedTrait;
+
     public $purchaseId;
 
     /**

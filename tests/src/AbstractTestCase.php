@@ -29,15 +29,15 @@ abstract class AbstractTestCase extends PHPUnit_Framework_TestCase
 
         $this->logger = new TestLogger();
 
-        DB::setConfig('default', array(
+        DB::setConfig([
             'dsn' => 'mysql:dbname=clippings/purchases;host=127.0.0.1',
             'username' => 'root',
-        ));
+        ]);
 
         Converter::initialize(new NullSource());
 
-        DB::get()->execute('ALTER TABLE BasketItem AUTO_INCREMENT = 6', array());
-        DB::get()->execute('ALTER TABLE Purchase AUTO_INCREMENT = 3', array());
+        DB::get()->execute('ALTER TABLE BasketItem AUTO_INCREMENT = 6');
+        DB::get()->execute('ALTER TABLE Purchase AUTO_INCREMENT = 3');
 
         DB::get()->setLogger($this->logger);
         DB::get()->beginTransaction();

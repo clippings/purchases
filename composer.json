@@ -12,11 +12,11 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/harp-orm/core"
+            "url": "https://github.com/harp-orm/timestamps"
         },
         {
             "type": "vcs",
-            "url": "https://github.com/harp-orm/money"
+            "url": "https://github.com/harp-orm/random-key"
         },
         {
             "type": "vcs",
@@ -27,16 +27,12 @@
         "harp-orm/harp": "dev-master",
         "harp-orm/core": "dev-master",
         "harp-orm/query": "dev-master",
-        "harp-orm/validate": "dev-master",
-        "harp-orm/serializer": "dev-master",
         "harp-orm/materialized-path": "dev-master",
         "harp-orm/locations": "dev-master",
         "harp-orm/timestamps": "dev-master",
         "harp-orm/money": "dev-master",
         "harp-orm/random-key": "dev-master",
         "clippings/transfer": "dev-master",
-        "clippings/transfer": "dev-master",
-        "clippings/currency-convert": "~0.1",
         "omnipay/dummy": "~2.0"
     },
     "autoload": {
