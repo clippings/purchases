@@ -3,7 +3,13 @@
 namespace CL\Purchases\Test;
 
 use Harp\Query\DB;
-use CL\Purchases\Repo;
+use CL\Purchases\BasketRepo;
+use CL\Purchases\BasketItemRepo;
+use CL\Purchases\ProductItemRepo;
+use CL\Purchases\RefundItemRepo;
+use CL\Purchases\RefundRepo;
+use CL\Purchases\StoreRepo;
+use CL\Purchases\ProductRepo;
 use CL\CurrencyConvert\Converter;
 use CL\CurrencyConvert\NullSource;
 use PHPUnit_Framework_TestCase;
@@ -42,13 +48,13 @@ abstract class AbstractTestCase extends PHPUnit_Framework_TestCase
         DB::get()->setLogger($this->logger);
         DB::get()->beginTransaction();
 
-        Repo\Basket::get()->clear();
-        Repo\BasketItem::get()->clear();
-        Repo\ProductItem::get()->clear();
-        Repo\RefundItem::get()->clear();
-        Repo\Refund::get()->clear();
-        Repo\Store::get()->clear();
-        Repo\Product::get()->clear();
+        BasketRepo::get()->clear();
+        BasketItemRepo::get()->clear();
+        ProductItemRepo::get()->clear();
+        RefundItemRepo::get()->clear();
+        RefundRepo::get()->clear();
+        StoreRepo::get()->clear();
+        ProductRepo::get()->clear();
     }
 
     public function tearDown()

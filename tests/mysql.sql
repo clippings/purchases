@@ -119,8 +119,8 @@ CREATE TABLE `Location` (
 
 INSERT INTO `Location` (`id`, `name`, `class`, `code`, `parentId`, `path`)
 VALUES
-  (1, 'Bulgaria', 'Harp\\Locations\\Model\\Country', 'BG', 0, ''),
-  (2, 'Sofia', 'Harp\\Locations\\Model\\City', NULL, 1, '1');
+  (1, 'Bulgaria', 'Harp\\Locations\\Country', 'BG', 0, ''),
+  (2, 'Sofia', 'Harp\\Locations\\City', NULL, 1, '1');
 
 INSERT INTO `Address`
 (`id`, `firstName`, `lastName`, `email`, `phone`, `postCode`, `line1`, `line2`, `cityId`, `countryId`)
@@ -136,11 +136,11 @@ VALUES
 INSERT INTO `BasketItem`
 (`id`, `class`, `transferId`, `purchaseId`, `refId`, `value`, `isFrozen`, `deletedAt`)
 VALUES
-  (1, 'CL\\Purchases\\Model\\ProductItem', 1, 1, 1, 1000, 1, NULL),
-  (2, 'CL\\Purchases\\Model\\ProductItem', 1, 1, 2, 2000, 1, NULL),
-  (3, 'CL\\Purchases\\Model\\ProductItem', 1, 1, 3, 3000, 1, NULL),
-  (4, 'CL\\Purchases\\Model\\ProductItem', 1, 2, 4, 4000, 1, NULL),
-  (5, 'CL\\Purchases\\Model\\ProductItem', 1, 2, 5, 5000, 1, '2014-02-03 00:00:00');
+  (1, 'CL\\Purchases\\ProductItem', 1, 1, 1, 1000, 1, NULL),
+  (2, 'CL\\Purchases\\ProductItem', 1, 1, 2, 2000, 1, NULL),
+  (3, 'CL\\Purchases\\ProductItem', 1, 1, 3, 3000, 1, NULL),
+  (4, 'CL\\Purchases\\ProductItem', 1, 2, 4, 4000, 1, NULL),
+  (5, 'CL\\Purchases\\ProductItem', 1, 2, 5, 5000, 1, '2014-02-03 00:00:00');
 
 INSERT INTO `RefundItem`
 (`id`, `transferId`, `refId`, `value`, `isFrozen`, `deletedAt`)

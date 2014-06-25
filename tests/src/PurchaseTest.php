@@ -2,53 +2,99 @@
 
 namespace CL\Purchases\Test;
 
-use CL\Purchases\Repo;
-use CL\Purchases\Model;
-use Omnipay\Omnipay;
+use CL\Purchases\Store;
+use CL\Purchases\Basket;
+use CL\Purchases\Purchase;
+use CL\Purchases\BasketItemRepo;
+use CL\Purchases\RefundRepo;
+use SebastianBergmann\Money\Currency;
 
 /**
- * @coversNothing
+ * @coversDefaultClass CL\Purchases\Purchase
  */
 class PurchaseTest extends AbstractTestCase
 {
-    public function testPurchase()
+    /**
+     * @covers ::getStore
+     * @covers ::setStore
+     */
+    public function testStore()
     {
-        $basket = new Model\Basket();
+        $product = new Purchase();
 
-        $address  = Repo\Address::get()->find(1);
+        $store = $product->getStore();
 
-        $product1 = Repo\Product::get()->find(5);
-        $product2 = Repo\Product::get()->find(6);
-        $product3 = Repo\Product::get()->find(7);
+        $this->assertInstanceOf('CL\Purchases\Store', $store);
+        $this->assertTrue($store->isVoid());
 
+        $store = new Store();
+
+        $product->setStore($store);
+
+        $this->assertSame($store, $product->getStore());
+    }
+
+    /**
+     * @covers ::getBasket
+     * @covers ::setBasket
+     */
+    public function testBasket()
+    {
+        $product = new Purchase();
+
+        $store = $product->getBasket();
+
+        $this->assertInstanceOf('CL\Purchases\Basket', $store);
+        $this->assertTrue($store->isVoid());
+
+        $store = new Basket();
+
+        $product->setBasket($store);
+
+        $this->assertSame($store, $product->getBasket());
+    }
+
+    /**
+     * @covers ::getItems
+     */
+    public function testItems()
+    {
+        $product = new Purchase();
+
+        $items = $product->getItems();
+
+        $this->assertEquals(BasketItemRepo::get(), $items->getRel()->getForeignRepo());
+    }
+
+    /**
+     * @covers ::getRefunds
+     */
+    public function testRefunds()
+    {
+        $product = new Purchase();
+
+        $refunds = $product->getRefunds();
+
+        $this->assertEquals(RefundRepo::get(), $refunds->getRel()->getForeignRepo());
+    }
+
+    /**
+     * @covers ::getCurrency
+     */
+    public function testCurrency()
+    {
+        $purchase = new Purchase();
+
+        $currency = new Currency('EUR');
+
+        $basket = $this->getMock('CL\Purchases\Basket', ['getCurrency']);
         $basket
-            ->setBilling($address);
+            ->expects($this->once())
+            ->method('getCurrency')
+            ->will($this->returnValue($currency));
 
-        $basket
-            ->addProduct($product1, 4)
-            ->addProduct($product2)
-            ->addProduct($product3)
-            ->addProduct($product1);
+        $purchase->setBasket($basket);
 
-        Repo\Basket::get()
-            ->save($basket);
-
-        $gateway = Omnipay::getFactory()->create('Dummy');
-
-        $parameters = [
-            'card' => [
-                'number' => '4242424242424242',
-                'expiryMonth' => 7,
-                'expiryYear' => 2014,
-                'cvv' => 123,
-            ],
-            'clientIp' => '192.168.0.1',
-        ];
-
-        $response = $basket->purchase($gateway, $parameters);
-
-        $this->assertTrue($response->isSuccessful());
-
-        $this->assertEquals('Success', $response->getMessage());
+        $this->assertSame($currency, $purchase->getCurrency());
     }
 }
