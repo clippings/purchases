@@ -9,29 +9,14 @@
             "role": "Author"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/harp-orm/harp"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/harp-orm/random-key"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/clippings/transfer"
-        }
-    ],
     "require": {
-        "harp-orm/harp": "dev-master",
-        "harp-orm/core": "dev-master",
-        "harp-orm/materialized-path": "dev-master",
-        "harp-orm/locations": "dev-master",
-        "harp-orm/timestamps": "dev-master",
-        "harp-orm/money": "dev-master",
-        "harp-orm/random-key": "dev-master",
-        "clippings/transfer": "dev-master",
+        "harp-orm/materialized-path": "~0.1.0",
+        "harp-orm/locations": "~0.1.0",
+        "harp-orm/timestamps": "~0.1.0",
+        "harp-orm/random-key": "~0.1.0",
+        "clippings/transfer": "~0.1.0"
+    },
+    "require-dev": {
         "omnipay/dummy": "~2.0"
     },
     "autoload": {
