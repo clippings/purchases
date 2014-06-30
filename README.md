@@ -8,6 +8,8 @@ Purchases
 
 Multi-Store Marketplace Core Components
 
+Basket, Purchase Products and Refund.
+
 ## License
 
 Copyright (c) 2014, Clippings Ltd. Developed by Ivan Kerin
