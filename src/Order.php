@@ -94,9 +94,10 @@ class Order extends AbstractModel
      */
     public function performFreeze()
     {
-        $this->freezeItems();
-        $this->freezeValue();
-        $this->freezePurchases();
+        $this
+            ->freezeItems()
+            ->freezeValue()
+            ->freezePurchases();
     }
 
     /**
@@ -104,9 +105,10 @@ class Order extends AbstractModel
      */
     public function performUnfreeze()
     {
-        $this->unfreezeItems();
-        $this->unfreezeValue();
-        $this->unfreezePurchases();
+        $this
+            ->unfreezeItems()
+            ->unfreezeValue()
+            ->unfreezePurchases();
     }
 
     /**

@@ -86,12 +86,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/clippings/transfer.git",
-                "reference": "4ca51096a2a88f910d7f321d3c6002f87a2922d6"
+                "reference": "2ab8cfb64395bd61caa0fc057da0305e6295cc4b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/clippings/transfer/zipball/4ca51096a2a88f910d7f321d3c6002f87a2922d6",
-                "reference": "4ca51096a2a88f910d7f321d3c6002f87a2922d6",
+                "url": "https://api.github.com/repos/clippings/transfer/zipball/2ab8cfb64395bd61caa0fc057da0305e6295cc4b",
+                "reference": "2ab8cfb64395bd61caa0fc057da0305e6295cc4b",
                 "shasum": ""
             },
             "require": {
@@ -122,7 +122,7 @@
                 }
             ],
             "description": "Persistent Omnipay Request / Response Objects",
-            "time": "2014-07-14 13:56:19"
+            "time": "2014-07-14 14:50:49"
         },
         {
             "name": "guzzle/common",
@@ -448,12 +448,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/harp-orm/money.git",
-                "reference": "ba88fbd48f23791aa1124d3c2d6ccca35be39cd0"
+                "reference": "f4a67f336a03b667f30fff7a2ed51aa89e7c8fa9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/harp-orm/money/zipball/ba88fbd48f23791aa1124d3c2d6ccca35be39cd0",
-                "reference": "ba88fbd48f23791aa1124d3c2d6ccca35be39cd0",
+                "url": "https://api.github.com/repos/harp-orm/money/zipball/f4a67f336a03b667f30fff7a2ed51aa89e7c8fa9",
+                "reference": "f4a67f336a03b667f30fff7a2ed51aa89e7c8fa9",
                 "shasum": ""
             },
             "require": {
@@ -480,7 +480,7 @@
                 }
             ],
             "description": "Helper Traits for Sebastian Bergmann's Money",
-            "time": "2014-07-14 13:40:11"
+            "time": "2014-07-14 14:40:45"
         },
         {
             "name": "harp-orm/query",
