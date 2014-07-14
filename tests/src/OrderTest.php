@@ -3,25 +3,42 @@
 namespace CL\Purchases\Test;
 
 use CL\Purchases\Address;
-use CL\Purchases\BasketItem;
-use CL\Purchases\Basket;
+use CL\Purchases\OrderItem;
+use CL\Purchases\Order;
 use CL\Purchases\Store;
 use CL\Purchases\Purchase;
 use CL\Purchases\Product;
 use Omnipay\Omnipay;
 
 /**
- * @coversDefaultClass CL\Purchases\Basket
+ * @coversDefaultClass CL\Purchases\Order
  */
-class BasketTest extends AbstractTestCase
+class OrderTest extends AbstractTestCase
 {
+    /**
+     * @covers ::initialize
+     */
+    public function testInitialize()
+    {
+        $order = Order::getRepo();
+
+        $billing = $order->getRelOrError('billing');
+        $this->assertEquals('CL\Purchases\Address', $billing->getRepo()->getModelClass());
+
+        $items = $order->getRelOrError('items');
+        $this->assertEquals('CL\Purchases\OrderItem', $items->getRepo()->getModelClass());
+
+        $purchases = $order->getRelOrError('purchases');
+        $this->assertEquals('CL\Purchases\Purchase', $purchases->getRepo()->getModelClass());
+    }
+
     /**
      * @covers ::getBilling
      * @covers ::setBilling
      */
     public function testBilling()
     {
-        $item = new Basket();
+        $item = new Order();
 
         $billing = $item->getBilling();
 
@@ -40,9 +57,9 @@ class BasketTest extends AbstractTestCase
      */
     public function testPurchases()
     {
-        $basket = new Basket();
+        $order = new Order();
 
-        $purchases = $basket->getPurchases();
+        $purchases = $order->getPurchases();
 
         $this->assertContainsOnlyInstancesOf('CL\Purchases\Purchase', $purchases->toArray());
     }
@@ -52,11 +69,11 @@ class BasketTest extends AbstractTestCase
      */
     public function testItems()
     {
-        $basket = new Basket();
+        $order = new Order();
 
-        $items = $basket->getItems();
+        $items = $order->getItems();
 
-        $this->assertContainsOnlyInstancesOf('CL\Purchases\Model\BasketItem', $items->toArray());
+        $this->assertContainsOnlyInstancesOf('CL\Purchases\Model\OrderItem', $items->toArray());
     }
 
     /**
@@ -64,21 +81,22 @@ class BasketTest extends AbstractTestCase
      */
     public function testProductItems()
     {
-        $basket = Basket::find(1);
+        $order = Order::find(1);
 
-        $items = BasketItem::findAll()->whereIn('id', [1, 2, 3, 4])->load();
+        $items = OrderItem::findAll()->whereIn('id', [1, 2, 3, 4])->load();
 
-        $productItems = $basket->getProductItems();
+        $productItems = $order->getProductItems();
 
         $this->assertSame($items->toArray(), $productItems->toArray());
     }
 
     /**
      * @covers ::performFreeze
+     * @covers ::freezePurchases
      */
     public function testPerformFreeze()
     {
-        $basket = new Basket();
+        $order = new Order();
 
         $purchase1 = $this->getMock('CL\Purchases\Purchase', ['freeze']);
         $purchase1
@@ -90,20 +108,21 @@ class BasketTest extends AbstractTestCase
             ->expects($this->once())
             ->method('freeze');
 
-        $basket
+        $order
             ->getPurchases()
                 ->add($purchase1)
                 ->add($purchase2);
 
-        $basket->performFreeze();
+        $order->performFreeze();
     }
 
     /**
      * @covers ::performUnfreeze
+     * @covers ::unfreezePurchases
      */
     public function testPerformUnfreeze()
     {
-        $basket = new Basket();
+        $order = new Order();
 
         $purchase1 = $this->getMock('CL\Purchases\Purchase', ['unfreeze']);
         $purchase1
@@ -115,12 +134,12 @@ class BasketTest extends AbstractTestCase
             ->expects($this->once())
             ->method('unfreeze');
 
-        $basket
+        $order
             ->getPurchases()
                 ->add($purchase1)
                 ->add($purchase2);
 
-        $basket->performUnfreeze();
+        $order->performUnfreeze();
     }
 
     /**
@@ -128,33 +147,33 @@ class BasketTest extends AbstractTestCase
      */
     public function testAddProduct()
     {
-        $basket = Basket::find(2);
+        $order = Order::find(2);
         $product1 = Product::find(1);
         $product2 = Product::find(5);
 
-        $basket
+        $order
             ->addProduct($product1)
             ->addProduct($product1, 4)
             ->addProduct($product2);
 
-        Basket::save($basket);
+        Order::save($order);
 
-        $item1 = $basket->getItems()->getFirst();
+        $item1 = $order->getItems()->getFirst();
         $this->assertInstanceOf('CL\Purchases\ProductItem', $item1);
         $this->assertSame($product1, $item1->getProduct());
         $this->assertEquals(5, $item1->quantity);
 
-        $item2 = $basket->getItems()->getNext();
+        $item2 = $order->getItems()->getNext();
         $this->assertInstanceOf('CL\Purchases\ProductItem', $item2);
         $this->assertSame($product2, $item2->getProduct());
         $this->assertEquals(1, $item2->quantity);
 
-        $this->assertCount(2, $basket->getItems());
-        $this->assertCount(1, $basket->getPurchases());
+        $this->assertCount(2, $order->getItems());
+        $this->assertCount(1, $order->getPurchases());
 
-        $this->assertEquals($product1->getStore(), $basket->getPurchases()->getFirst()->getStore());
-        $this->assertTrue($basket->getPurchases()->getFirst()->getItems()->has($item1));
-        $this->assertTrue($basket->getPurchases()->getFirst()->getItems()->has($item2));
+        $this->assertEquals($product1->getStore(), $order->getPurchases()->getFirst()->getStore());
+        $this->assertTrue($order->getPurchases()->getFirst()->getItems()->has($item1));
+        $this->assertTrue($order->getPurchases()->getFirst()->getItems()->has($item2));
     }
 
     /**
@@ -162,17 +181,17 @@ class BasketTest extends AbstractTestCase
      */
     public function testGetPurchaseForStore()
     {
-        $basket = Basket::find(2);
+        $order = Order::find(2);
         $store = Store::find(1);
 
-        $purchase = $basket->getPurchaseForStore($store);
+        $purchase = $order->getPurchaseForStore($store);
 
         $this->assertInstanceOf('CL\Purchases\Purchase', $purchase);
         $this->assertSame($store, $purchase->getStore());
-        $this->assertSame($basket, $purchase->getBasket());
-        $this->assertTrue($basket->getPurchases()->has($purchase));
+        $this->assertSame($order, $purchase->getOrder());
+        $this->assertTrue($order->getPurchases()->has($purchase));
 
-        $purchase2 = $basket->getPurchaseForStore($store);
+        $purchase2 = $order->getPurchaseForStore($store);
         $this->assertSame($purchase2, $purchase);
     }
 
@@ -181,22 +200,22 @@ class BasketTest extends AbstractTestCase
      */
     public function testIntegration()
     {
-        $basket = Basket::find(1);
+        $order = Order::find(1);
 
-        $item1 = BasketItem::find(1);
-        $item2 = BasketItem::find(2);
-        $item3 = BasketItem::find(3);
-        $item4 = BasketItem::find(4);
+        $item1 = OrderItem::find(1);
+        $item2 = OrderItem::find(2);
+        $item3 = OrderItem::find(3);
+        $item4 = OrderItem::find(4);
 
         $purchase1 = Purchase::find(1);
         $purchase2 = Purchase::find(2);
         $billing = Address::find(1);
 
-        $items = $basket->getItems();
+        $items = $order->getItems();
 
-        $this->assertSame([$item1, $item2, $item3, $item4], $basket->getItems()->toArray());
-        $this->assertSame([$purchase1, $purchase2], $basket->getPurchases()->toArray());
-        $this->assertSame($billing, $basket->getBilling());
+        $this->assertSame([$item1, $item2, $item3, $item4], $order->getItems()->toArray());
+        $this->assertSame([$purchase1, $purchase2], $order->getPurchases()->toArray());
+        $this->assertSame($billing, $order->getBilling());
     }
 
     /**
@@ -204,40 +223,28 @@ class BasketTest extends AbstractTestCase
      */
     public function testGetRequestParameters()
     {
-        $basket  = Basket::find(1);
+        $order  = Order::find(1);
 
-        $data = $basket->getRequestParameters(array());
+        $data = $order->getRequestParameters(array());
 
         $expected = array(
+            'amount' => 100.0,
+            'currency' => 'GBP',
+            'transactionReference' => 1,
             'items' => [
-                [
+                0 => [
                     'name' => 1,
-                    'description' => 'Product 1',
-                    'price' => 10.0,
+                    'description' => 'Items from Store 1',
+                    'price' => 60.0,
                     'quantity' => 1,
                 ],
-                [
+                1 => [
                     'name' => 2,
-                    'description' => 'Product 2',
-                    'price' => 20.0,
-                    'quantity' => 1,
-                ],
-                [
-                    'name' => 3,
-                    'description' => 'Product 3',
-                    'price' => 30.0,
-                    'quantity' => 1,
-                ],
-                [
-                    'name' => 4,
-                    'description' => 'Product 4',
+                    'description' => 'Items from Store 1',
                     'price' => 40.0,
                     'quantity' => 1,
                 ],
             ],
-            'amount' => 100.0,
-            'currency' => 'GBP',
-            'transactionReference' => 1,
             'card' => [
                 'firstName' => 'John',
                 'lastName' => 'Doe',
@@ -261,13 +268,13 @@ class BasketTest extends AbstractTestCase
     {
         $gateway = Omnipay::getFactory()->create('Dummy');
 
-        $basket = $this->getMock('CL\Purchases\Basket', ['execute']);
+        $order = $this->getMock('CL\Purchases\Order', ['execute']);
 
         $params = ['test', 'test2'];
 
         $response = 'result response';
 
-        $basket
+        $order
             ->expects($this->once())
             ->method('execute')
             ->with(
@@ -277,7 +284,7 @@ class BasketTest extends AbstractTestCase
             )
             ->will($this->returnValue($response));
 
-        $result = $basket->purchase($gateway, $params);
+        $result = $order->purchase($gateway, $params);
 
         $this->assertEquals($response, $result);
     }
@@ -289,13 +296,13 @@ class BasketTest extends AbstractTestCase
     {
         $gateway = Omnipay::getFactory()->create('Dummy');
 
-        $basket = $this->getMock('CL\Purchases\Basket', ['execute']);
+        $order = $this->getMock('CL\Purchases\Order', ['execute']);
 
         $params = ['test', 'test2'];
 
         $response = 'result response';
 
-        $basket
+        $order
             ->expects($this->once())
             ->method('execute')
             ->with(
@@ -305,7 +312,7 @@ class BasketTest extends AbstractTestCase
             )
             ->will($this->returnValue($response));
 
-        $result = $basket->complete($gateway, $params);
+        $result = $order->complete($gateway, $params);
 
         $this->assertEquals($response, $result);
     }

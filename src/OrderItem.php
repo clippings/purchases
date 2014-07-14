@@ -3,20 +3,34 @@
 namespace CL\Purchases;
 
 use Harp\Harp\AbstractModel;
-use Harp\Core\Model\InheritedTrait;
-use CL\Transfer\AbstractItem;
+use Harp\Harp\Model\InheritedTrait;
+use CL\Transfer\ItemTrait;
 use SebastianBergmann\Money\Money;
+use Harp\Harp\Config;
+use Harp\Harp\Rel;
+
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class BasketItem extends AbstractItem
+class OrderItem extends AbstractModel
 {
-    const REPO = 'CL\Purchases\BasketItemRepo';
-
     use InheritedTrait;
+    use ItemTrait;
+
+    public static function initialize(Config $config)
+    {
+        ItemTrait::initialize($config);
+        InheritedTrait::initialize($config);
+
+        $config
+            ->addRels([
+                new Rel\BelongsTo('order', $config, Order::getRepo(), ['key' => 'transferId']),
+                new Rel\BelongsTo('purchase', $config, Purchase::getRepo()),
+            ]);
+    }
 
     public $purchaseId;
 
@@ -25,7 +39,7 @@ class BasketItem extends AbstractItem
      */
     public function getCurrency()
     {
-        return $this->getBasket()->getCurrency();
+        return $this->getOrder()->getCurrency();
     }
 
     /**
@@ -50,7 +64,7 @@ class BasketItem extends AbstractItem
      */
     public function getPurchase()
     {
-        return $this->getLink('purchase')->get();
+        return $this->get('purchase');
     }
 
     /**
@@ -58,22 +72,26 @@ class BasketItem extends AbstractItem
      */
     public function setPurchase(Purchase $purchase)
     {
-        return $this->getLink('purchase')->set($purchase);
+        $this->set('purchase', $purchase);
+
+        return $this;
     }
 
     /**
-     * @return Basket
+     * @return Order
      */
-    public function getBasket()
+    public function getOrder()
     {
-        return $this->getLink('basket')->get();
+        return $this->get('order');
     }
 
     /**
-     * @param Basket $basket
+     * @param Order $order
      */
-    public function setBasket(Basket $basket)
+    public function setOrder(Order $order)
     {
-        return $this->getLink('basket')->set($basket);
+        $this->set('order', $order);
+
+        return $this;
     }
 }

@@ -3,8 +3,9 @@
 namespace CL\Purchases\Test;
 
 use CL\Purchases\Address;
-use CL\Purchases\Basket;
-use Harp\Locations;
+use CL\Purchases\Order;
+use Harp\Locations\City;
+use Harp\Locations\Country;
 
 
 /**
@@ -12,6 +13,33 @@ use Harp\Locations;
  */
 class AddressTest extends AbstractTestCase
 {
+    /**
+     * @covers ::initialize
+     */
+    public function testInitialize()
+    {
+        $address = Address::getRepo();
+
+        $order = $address->getRelOrError('order');
+        $this->assertEquals('CL\Purchases\Order', $order->getRepo()->getModelClass());
+
+        $country = $address->getRelOrError('country');
+        $this->assertEquals('Harp\Locations\Country', $country->getRepo()->getModelClass());
+
+        $city = $address->getRelOrError('city');
+        $this->assertEquals('Harp\Locations\City', $city->getRepo()->getModelClass());
+
+        $model = new Address();
+
+        $this->assertFalse($model->validate());
+
+        $errors = $model->getErrors()->humanize();
+
+        $expected = 'firstName must be present, lastName must be present, email must be present, phone must be present, postCode must be present, line1 must be present';
+
+        $this->assertEquals($expected, $errors);
+    }
+
     /**
      * @covers ::getCity
      * @covers ::setCity
@@ -25,7 +53,7 @@ class AddressTest extends AbstractTestCase
         $this->assertInstanceOf('Harp\Locations\City', $city);
         $this->assertTrue($city->isVoid());
 
-        $city = new Locations\City();
+        $city = new City();
 
         $address->setCity($city);
 
@@ -45,7 +73,7 @@ class AddressTest extends AbstractTestCase
         $this->assertInstanceOf('Harp\Locations\Country', $country);
         $this->assertTrue($country->isVoid());
 
-        $country = new Locations\Country();
+        $country = new Country();
 
         $address->setCountry($country);
 
@@ -53,23 +81,23 @@ class AddressTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::getBasket
-     * @covers ::setBasket
+     * @covers ::getOrder
+     * @covers ::setOrder
      */
-    public function testBasket()
+    public function testOrder()
     {
         $address = new Address();
 
-        $basket = $address->getBasket();
+        $order = $address->getOrder();
 
-        $this->assertInstanceOf('CL\Purchases\Basket', $basket);
-        $this->assertTrue($basket->isVoid());
+        $this->assertInstanceOf('CL\Purchases\Order', $order);
+        $this->assertTrue($order->isVoid());
 
-        $basket = new Basket();
+        $order = new Order();
 
-        $address->setBasket($basket);
+        $address->setOrder($order);
 
-        $this->assertSame($basket, $address->getBasket());
+        $this->assertSame($order, $address->getOrder());
     }
 
     /**
@@ -78,11 +106,11 @@ class AddressTest extends AbstractTestCase
     public function testIntegration()
     {
         $address = Address::find(1);
-        $basket = Basket::find(1);
-        $country = Locations\Country::find(1);
-        $city = Locations\City::find(2);
+        $order = Order::find(1);
+        $country = Country::find(1);
+        $city = City::find(2);
 
-        $this->assertSame($basket, $address->getBasket());
+        $this->assertSame($order, $address->getOrder());
         $this->assertSame($city, $address->getCity());
         $this->assertSame($country, $address->getCountry());
     }

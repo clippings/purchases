@@ -2,24 +2,41 @@
 
 namespace CL\Purchases;
 
-use Harp\Harp\AbstractModel;
+use Harp\Harp\Config;
+use Harp\Harp\Rel;
 use Harp\Timestamps\TimestampsTrait;
 use Harp\RandomKey\RandomKeyTrait;
-use CL\Transfer\AbstractItemGroup;
+use Harp\Harp\AbstractModel;
+use CL\Transfer\ItemGroupTrait;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class Purchase extends AbstractItemGroup
+class Purchase extends AbstractModel
 {
-    const REPO = 'CL\Purchases\PurchaseRepo';
-
     use TimestampsTrait;
     use RandomKeyTrait;
+    use ItemGroupTrait;
 
-    public $basketId;
+    public static function initialize(Config $config)
+    {
+        ItemGroupTrait::initialize($config);
+        TimestampsTrait::initialize($config);
+        RandomKeyTrait::initialize($config);
+
+        $config
+            ->setTable('Purchase')
+            ->addRels([
+                new Rel\BelongsTo('order', $config, Order::getRepo()),
+                new Rel\BelongsTo('store', $config, Store::getRepo()),
+                new Rel\HasMany('items', $config, OrderItem::getRepo()),
+                new Rel\HasMany('refunds', $config, Refund::getRepo()),
+            ]);
+    }
+
+    public $orderId;
     public $storeId;
 
     /**
@@ -27,7 +44,7 @@ class Purchase extends AbstractItemGroup
      */
     public function getCurrency()
     {
-        return $this->getBasket()->getCurrency();
+        return $this->getOrder()->getCurrency();
     }
 
     /**
@@ -35,7 +52,7 @@ class Purchase extends AbstractItemGroup
      */
     public function getItems()
     {
-        return $this->getLink('items');
+        return $this->all('items');
     }
 
     /**
@@ -43,23 +60,25 @@ class Purchase extends AbstractItemGroup
      */
     public function getRefunds()
     {
-        return $this->getLink('refunds');
+        return $this->all('refunds');
     }
 
     /**
-     * @return Basket
+     * @return Order
      */
-    public function getBasket()
+    public function getOrder()
     {
-        return $this->getLink('basket')->get();
+        return $this->get('order');
     }
 
     /**
-     * @param Basket $basket
+     * @param Order $order
      */
-    public function setBasket(Basket $basket)
+    public function setOrder(Order $order)
     {
-        return $this->getLink('basket')->set($basket);
+        $this->set('order', $order);
+
+        return $this;
     }
 
     /**
@@ -67,7 +86,7 @@ class Purchase extends AbstractItemGroup
      */
     public function getStore()
     {
-        return $this->getLink('store')->get();
+        return $this->get('store');
     }
 
     /**
@@ -75,6 +94,8 @@ class Purchase extends AbstractItemGroup
      */
     public function setStore(Store $store)
     {
-        return $this->getLink('store')->set($store);
+        $this->set('store', $store);
+
+        return $this;
     }
 }

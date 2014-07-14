@@ -3,10 +3,10 @@
 namespace CL\Purchases\Test;
 
 use CL\Purchases\Store;
-use CL\Purchases\Basket;
+use CL\Purchases\Order;
 use CL\Purchases\Purchase;
-use CL\Purchases\BasketItemRepo;
-use CL\Purchases\RefundRepo;
+use CL\Purchases\Refund;
+use CL\Purchases\OrderItem;
 use SebastianBergmann\Money\Currency;
 
 /**
@@ -14,6 +14,23 @@ use SebastianBergmann\Money\Currency;
  */
 class PurchaseTest extends AbstractTestCase
 {
+    /**
+     * @covers ::initialize
+     */
+    public function testInitialize()
+    {
+        $purchase = Purchase::getRepo();
+
+        $store = $purchase->getRelOrError('store');
+        $this->assertEquals('CL\Purchases\Store', $store->getRepo()->getModelClass());
+
+        $order = $purchase->getRelOrError('order');
+        $this->assertEquals('CL\Purchases\Order', $order->getRepo()->getModelClass());
+
+        $items = $purchase->getRelOrError('items');
+        $this->assertEquals('CL\Purchases\OrderItem', $items->getRepo()->getModelClass());
+    }
+
     /**
      * @covers ::getStore
      * @covers ::setStore
@@ -35,23 +52,23 @@ class PurchaseTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::getBasket
-     * @covers ::setBasket
+     * @covers ::getOrder
+     * @covers ::setOrder
      */
-    public function testBasket()
+    public function testOrder()
     {
         $product = new Purchase();
 
-        $store = $product->getBasket();
+        $store = $product->getOrder();
 
-        $this->assertInstanceOf('CL\Purchases\Basket', $store);
+        $this->assertInstanceOf('CL\Purchases\Order', $store);
         $this->assertTrue($store->isVoid());
 
-        $store = new Basket();
+        $store = new Order();
 
-        $product->setBasket($store);
+        $product->setOrder($store);
 
-        $this->assertSame($store, $product->getBasket());
+        $this->assertSame($store, $product->getOrder());
     }
 
     /**
@@ -63,7 +80,7 @@ class PurchaseTest extends AbstractTestCase
 
         $items = $product->getItems();
 
-        $this->assertEquals(BasketItemRepo::get(), $items->getRel()->getForeignRepo());
+        $this->assertEquals(OrderItem::getRepo(), $items->getRel()->getRepo());
     }
 
     /**
@@ -75,7 +92,7 @@ class PurchaseTest extends AbstractTestCase
 
         $refunds = $product->getRefunds();
 
-        $this->assertEquals(RefundRepo::get(), $refunds->getRel()->getForeignRepo());
+        $this->assertEquals(Refund::getRepo(), $refunds->getRel()->getRepo());
     }
 
     /**
@@ -87,13 +104,13 @@ class PurchaseTest extends AbstractTestCase
 
         $currency = new Currency('EUR');
 
-        $basket = $this->getMock('CL\Purchases\Basket', ['getCurrency']);
-        $basket
+        $order = $this->getMock('CL\Purchases\Order', ['getCurrency']);
+        $order
             ->expects($this->once())
             ->method('getCurrency')
             ->will($this->returnValue($currency));
 
-        $purchase->setBasket($basket);
+        $purchase->setOrder($order);
 
         $this->assertSame($currency, $purchase->getCurrency());
     }

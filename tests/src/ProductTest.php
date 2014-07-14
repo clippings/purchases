@@ -14,6 +14,30 @@ use SebastianBergmann\Money\Currency;
 class ProductTest extends AbstractTestCase
 {
     /**
+     * @covers ::initialize
+     */
+    public function testInitialize()
+    {
+        $product = Product::getRepo();
+
+        $store = $product->getRelOrError('store');
+        $this->assertEquals('CL\Purchases\Store', $store->getRepo()->getModelClass());
+
+        $items = $product->getRelOrError('productItems');
+        $this->assertEquals('CL\Purchases\ProductItem', $items->getRepo()->getModelClass());
+
+        $model = new Product();
+
+        $this->assertFalse($model->validate());
+
+        $errors = $model->getErrors()->humanize();
+
+        $expected = 'name must be present';
+
+        $this->assertEquals($expected, $errors);
+    }
+
+    /**
      * @covers ::getStore
      * @covers ::setStore
      */

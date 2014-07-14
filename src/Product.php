@@ -5,7 +5,10 @@ namespace CL\Purchases;
 use Harp\Harp\AbstractModel;
 use Harp\Money\CurrencyTrait;
 use Harp\Money\ValueTrait;
-use Harp\Core\Model\SoftDeleteTrait;
+use Harp\Harp\Model\SoftDeleteTrait;
+use Harp\Harp\Rel;
+use Harp\Harp\Config;
+use Harp\Validate\Assert;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -14,11 +17,26 @@ use Harp\Core\Model\SoftDeleteTrait;
  */
 class Product extends AbstractModel
 {
-    const REPO = 'CL\Purchases\ProductRepo';
-
     use CurrencyTrait;
     use ValueTrait;
     use SoftDeleteTrait;
+
+    public static function initialize(Config $config)
+    {
+        CurrencyTrait::initialize($config);
+        ValueTrait::initialize($config);
+        SoftDeleteTrait::initialize($config);
+
+        $config
+            ->addRels([
+                new Rel\BelongsTo('store', $config, Store::getRepo()),
+                new Rel\HasMany('productItems', $config, ProductItem::getRepo(), ['foreignKey' => 'refId']),
+            ])
+            ->addAsserts([
+                new Assert\Present('name'),
+                new Assert\LengthLessThan('name', 150),
+            ]);
+    }
 
     public $id;
     public $name;
@@ -30,7 +48,7 @@ class Product extends AbstractModel
      */
     public function getProductItems()
     {
-        return $this->getLink('productItems');
+        return $this->all('productItems');
     }
 
     /**
@@ -38,7 +56,7 @@ class Product extends AbstractModel
      */
     public function getStore()
     {
-        return $this->getLink('store')->get();
+        return $this->get('store');
     }
 
     /**
@@ -46,7 +64,7 @@ class Product extends AbstractModel
      */
     public function setStore(Store $store)
     {
-        $this->getLink('store')->set($store);
+        $this->set('store', $store);
 
         return $this;
     }

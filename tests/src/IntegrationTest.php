@@ -2,7 +2,7 @@
 
 namespace CL\Purchases\Test;
 
-use CL\Purchases\Basket;
+use CL\Purchases\Order;
 use CL\Purchases\Address;
 use CL\Purchases\Product;
 
@@ -15,7 +15,7 @@ class IntegrationTest extends AbstractTestCase
 {
     public function testPurchase()
     {
-        $basket = new Basket();
+        $order = new Order();
 
         $address  = Address::find(1);
 
@@ -23,16 +23,16 @@ class IntegrationTest extends AbstractTestCase
         $product2 = Product::find(6);
         $product3 = Product::find(7);
 
-        $basket
+        $order
             ->setBilling($address);
 
-        $basket
+        $order
             ->addProduct($product1, 4)
             ->addProduct($product2)
             ->addProduct($product3)
             ->addProduct($product1);
 
-        Basket::save($basket);
+        Order::save($order);
 
         $gateway = Omnipay::getFactory()->create('Dummy');
 
@@ -46,7 +46,7 @@ class IntegrationTest extends AbstractTestCase
             'clientIp' => '192.168.0.1',
         ];
 
-        $response = $basket->purchase($gateway, $parameters);
+        $response = $order->purchase($gateway, $parameters);
 
         $this->assertTrue($response->isSuccessful());
 

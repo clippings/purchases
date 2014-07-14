@@ -10,11 +10,11 @@
         }
     ],
     "require": {
-        "harp-orm/materialized-path": "~0.1.0",
-        "harp-orm/locations": "~0.1.0",
-        "harp-orm/timestamps": "~0.1.0",
-        "harp-orm/random-key": "~0.1.0",
-        "clippings/transfer": "~0.1.0"
+        "harp-orm/materialized-path": "~0.3.0",
+        "harp-orm/locations": "~0.3.0",
+        "harp-orm/timestamps": "~0.3.0",
+        "harp-orm/random-key": "~0.3.0",
+        "clippings/transfer": "~0.2.0"
     },
     "require-dev": {
         "omnipay/dummy": "~2.0"

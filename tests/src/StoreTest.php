@@ -3,15 +3,38 @@
 namespace CL\Purchases\Test;
 
 use CL\Purchases\Store;
-use CL\Purchases\ProductRepo;
-use CL\Purchases\PurchaseRepo;
-
+use CL\Purchases\Product;
+use CL\Purchases\Purchase;
 
 /**
  * @coversDefaultClass CL\Purchases\Store
  */
 class StoreTest extends AbstractTestCase
 {
+    /**
+     * @covers ::initialize
+     */
+    public function testInitialize()
+    {
+        $store = Store::getRepo();
+
+        $products = $store->getRelOrError('products');
+        $this->assertEquals('CL\Purchases\Product', $products->getRepo()->getModelClass());
+
+        $purchases = $store->getRelOrError('purchases');
+        $this->assertEquals('CL\Purchases\Purchase', $purchases->getRepo()->getModelClass());
+
+        $model = new Store();
+
+        $this->assertFalse($model->validate());
+
+        $errors = $model->getErrors()->humanize();
+
+        $expected = 'name must be present';
+
+        $this->assertEquals($expected, $errors);
+    }
+
     /**
      * @covers ::getProducts
      */
@@ -21,8 +44,8 @@ class StoreTest extends AbstractTestCase
 
         $items = $store->getProducts();
 
-        $this->assertInstanceOf('Harp\Core\Repo\LinkMany', $items);
-        $this->assertEquals(ProductRepo::get(), $items->getRel()->getForeignRepo());
+        $this->assertInstanceOf('Harp\Harp\Repo\LinkMany', $items);
+        $this->assertEquals(Product::getRepo(), $items->getRel()->getRepo());
     }
 
     /**
@@ -34,6 +57,6 @@ class StoreTest extends AbstractTestCase
 
         $items = $store->getPurchases();
 
-        $this->assertEquals(PurchaseRepo::get(), $items->getRel()->getForeignRepo());
+        $this->assertEquals(Purchase::getRepo(), $items->getRel()->getRepo());
     }
 }

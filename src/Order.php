@@ -2,10 +2,15 @@
 
 namespace CL\Purchases;
 
-use CL\Transfer\AbstractTransfer;
-use Harp\Money\CurrencyTrait;
+use Harp\Harp\Rel;
+use Harp\Harp\Config;
+use Harp\Harp\AbstractModel;
+use Harp\Validate\Assert;
 use Harp\Timestamps\TimestampsTrait;
+use Harp\Money\CurrencyTrait;
 use Harp\RandomKey\RandomKeyTrait;
+use CL\Transfer\TransferTrait;
+use CL\Transfer\ItemGroupTrait;
 use Omnipay\Common\GatewayInterface;
 
 /**
@@ -13,13 +18,30 @@ use Omnipay\Common\GatewayInterface;
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class Basket extends AbstractTransfer
+class Order extends AbstractModel
 {
-    const REPO = 'CL\Purchases\BasketRepo';
-
     use TimestampsTrait;
     use RandomKeyTrait;
     use CurrencyTrait;
+    use ItemGroupTrait;
+    use TransferTrait;
+
+    public static function initialize(Config $config)
+    {
+        TransferTrait::initialize($config);
+        ItemGroupTrait::initialize($config);
+        TimestampsTrait::initialize($config);
+        RandomKeyTrait::initialize($config);
+        CurrencyTrait::initialize($config);
+
+        $config
+            ->setTable('Order')
+            ->addRels([
+                new Rel\HasMany('items', $config, OrderItem::getRepo(), ['foreignKey' => 'transferId']),
+                new Rel\HasMany('purchases', $config, Purchase::getRepo()),
+                new Rel\BelongsTo('billing', $config, Address::getRepo()),
+            ]);
+    }
 
     public $billingId;
 
@@ -28,7 +50,7 @@ class Basket extends AbstractTransfer
      */
     public function getPurchases()
     {
-        return $this->getLink('purchases');
+        return $this->all('purchases');
     }
 
     /**
@@ -36,7 +58,7 @@ class Basket extends AbstractTransfer
      */
     public function getItems()
     {
-        return $this->getLink('items');
+        return $this->all('items');
     }
 
     /**
@@ -44,9 +66,27 @@ class Basket extends AbstractTransfer
      */
     public function getProductItems()
     {
-        return $this->getLink('items')->get()->filter(function (BasketItem $item) {
+        return $this->getItems()->filter(function (OrderItem $item) {
             return $item instanceof ProductItem;
         });
+    }
+
+    public function freezePurchases()
+    {
+        foreach ($this->getPurchases() as $purchase) {
+            $purchase->freeze();
+        }
+
+        return $this;
+    }
+
+    public function unfreezePurchases()
+    {
+        foreach ($this->getPurchases() as $purchase) {
+            $purchase->unfreeze();
+        }
+
+        return $this;
     }
 
     /**
@@ -54,11 +94,9 @@ class Basket extends AbstractTransfer
      */
     public function performFreeze()
     {
-        parent::performFreeze();
-
-        foreach ($this->getPurchases() as $purchase) {
-            $purchase->freeze();
-        }
+        $this->freezeItems();
+        $this->freezeValue();
+        $this->freezePurchases();
     }
 
     /**
@@ -66,11 +104,9 @@ class Basket extends AbstractTransfer
      */
     public function performUnfreeze()
     {
-        parent::performUnfreeze();
-
-        foreach ($this->getPurchases() as $purchase) {
-            $purchase->unfreeze();
-        }
+        $this->unfreezeItems();
+        $this->unfreezeValue();
+        $this->unfreezePurchases();
     }
 
     /**
@@ -78,7 +114,7 @@ class Basket extends AbstractTransfer
      */
     public function getBilling()
     {
-        return $this->getLink('billing')->get();
+        return $this->get('billing');
     }
 
     /**
@@ -86,7 +122,7 @@ class Basket extends AbstractTransfer
      */
     public function setBilling(Address $billing)
     {
-        return $this->getLink('billing')->set($billing);
+        return $this->set('billing', $billing);
     }
 
     /**
@@ -95,7 +131,18 @@ class Basket extends AbstractTransfer
      */
     public function getRequestParameters(array $defaultParameters)
     {
-        $parameters = parent::getRequestParameters($defaultParameters);
+        $parameters = $this->getTransferParameters();
+
+        $parameters['items'] = [];
+
+        foreach ($this->getPurchases() as $purchase) {
+            $parameters['items'] []= [
+                'name' => $purchase->getId(),
+                'description' => "Items from {$purchase->getStore()->name}",
+                'price' => (float) ($purchase->getValue()->getAmount() / 100),
+                'quantity' => 1,
+            ];
+        }
 
         $billing = $this->getBilling();
 
@@ -129,7 +176,7 @@ class Basket extends AbstractTransfer
 
         $purchase = new Purchase();
         $purchase->setStore($store);
-        $purchase->setBasket($this);
+        $purchase->setOrder($this);
         $this->getPurchases()->add($purchase);
 
         return $purchase;
@@ -154,7 +201,7 @@ class Basket extends AbstractTransfer
         $purchase = $this->getPurchaseForStore($product->getStore());
 
         $item = new ProductItem(['quantity' => $quantity]);
-        $item->setBasket($this);
+        $item->setOrder($this);
         $item->setProduct($product);
         $item->setPurchase($purchase);
 

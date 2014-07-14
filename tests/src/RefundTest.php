@@ -4,7 +4,7 @@ namespace CL\Purchases\Test;
 
 use CL\Purchases\Purchase;
 use CL\Purchases\Refund;
-use CL\Purchases\RefundItemRepo;
+use CL\Purchases\RefundItem;
 use SebastianBergmann\Money\Money;
 use SebastianBergmann\Money\Currency;
 use Omnipay\Omnipay;
@@ -15,17 +15,14 @@ use Omnipay\Omnipay;
 class RefundTest extends AbstractTestCase
 {
     /**
-     * @covers ::getRepo
+     * @covers ::initialize
      */
-    public function testGetRepo()
+    public function testInitialize()
     {
-        $refund = new Refund();
+        $refund = Refund::getRepo();
 
-        $repo = $refund->getRepo();
-        $repo2 = $refund->getRepo();
-
-        $this->assertSame($repo, $repo2);
-        $this->assertInstanceOf('CL\Purchases\Refund', $refund);
+        $purchase = $refund->getRelOrError('purchase');
+        $this->assertEquals('CL\Purchases\Purchase', $purchase->getRepo()->getModelClass());
     }
 
     /**
@@ -49,35 +46,15 @@ class RefundTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::getItems
-     */
-    public function testItems()
-    {
-        $refund = new Refund();
-
-        $items = $refund->getItems();
-
-        $this->assertEquals(RefundItemRepo::get(), $items->getRel()->getForeignRepo());
-    }
-
-    /**
      * @covers ::getRequestParameters
      */
     public function testGetRequestParameters()
     {
-        $basket  = Refund::find(1);
+        $order  = Refund::find(1);
 
-        $data = $basket->getRequestParameters(array());
+        $data = $order->getRequestParameters(array());
 
         $expected = [
-            'items' => [
-                [
-                    'name' => 4,
-                    'description' => 'Refund for Product 4',
-                    'price' => 40.0,
-                    'quantity' => 1,
-                ],
-            ],
             'amount' => 40.0,
             'currency' => 'GBP',
             'transactionReference' => 1,
@@ -86,6 +63,14 @@ class RefundTest extends AbstractTestCase
                 'reference' => '53a43cc327040',
                 'success' => true,
                 'message' => 'Success',
+            ],
+            'items' => [
+                [
+                    'name' => 1,
+                    'description' => 'Refund for 32NDWZEH',
+                    'price' => 40.0,
+                    'quantity' => 1,
+                ],
             ],
         ];
 

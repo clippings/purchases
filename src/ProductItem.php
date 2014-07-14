@@ -2,14 +2,25 @@
 
 namespace CL\Purchases;
 
+use Harp\Harp\Config;
+use Harp\Harp\Rel;
+
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class ProductItem extends BasketItem
+class ProductItem extends OrderItem
 {
-    const REPO = 'CL\Purchases\ProductItemRepo';
+    public static function initialize(Config $config)
+    {
+        parent::initialize($config);
+
+        $config
+            ->addRels([
+                new Rel\BelongsTo('product', $config, Product::getRepo(), ['key' => 'refId']),
+            ]);
+    }
 
     /**
      * @return string
@@ -32,7 +43,7 @@ class ProductItem extends BasketItem
      */
     public function getProduct()
     {
-        return $this->getLink('product')->get();
+        return $this->get('product');
     }
 
     /**
@@ -40,6 +51,8 @@ class ProductItem extends BasketItem
      */
     public function setProduct(Product $product)
     {
-        return $this->getLink('product')->set($product);
+        $this->set('product', $product);
+
+        return $this;
     }
 }

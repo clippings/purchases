@@ -3,8 +3,12 @@
 namespace CL\Purchases;
 
 use Harp\Harp\AbstractModel;
+use Harp\Harp\Model\SoftDeleteTrait;
 use Harp\Locations\City;
 use Harp\Locations\Country;
+use Harp\Harp\Rel;
+use Harp\Harp\Config;
+use Harp\Validate\Assert;
 use SebastianBergmann\Money\Currency;
 use SebastianBergmann\Money\Money;
 
@@ -15,7 +19,26 @@ use SebastianBergmann\Money\Money;
  */
 class Address extends AbstractModel
 {
-    const REPO = 'CL\Purchases\AddressRepo';
+    public static function initialize(Config $config)
+    {
+        SoftDeleteTrait::initialize($config);
+
+        $config
+            ->addRels([
+                new Rel\BelongsTo('city', $config, City::getRepo()),
+                new Rel\BelongsTo('country', $config, Country::getRepo()),
+                new Rel\HasOne('order', $config, Order::getRepo(), ['foreignKey' => 'billingId']),
+            ])
+            ->addAsserts([
+                new Assert\Present('firstName'),
+                new Assert\Present('lastName'),
+                new Assert\Present('email'),
+                new Assert\Present('phone'),
+                new Assert\Present('postCode'),
+                new Assert\Present('line1'),
+                new Assert\Email('email'),
+            ]);
+    }
 
     public $id;
     public $firstName;
@@ -29,19 +52,21 @@ class Address extends AbstractModel
     public $countryId;
 
     /**
-     * @return Basket
+     * @return Order
      */
-    public function getBasket()
+    public function getOrder()
     {
-        return $this->getLink('basket')->get();
+        return $this->get('order');
     }
 
     /**
-     * @param Basket $basket
+     * @param Order $order
      */
-    public function setBasket(Basket $basket)
+    public function setOrder(Order $order)
     {
-        return $this->getLink('basket')->set($basket);
+        $this->set('order', $order);
+
+        return $this;
     }
 
     /**
@@ -49,7 +74,7 @@ class Address extends AbstractModel
      */
     public function getCity()
     {
-        return $this->getLink('city')->get();
+        return $this->get('city');
     }
 
     /**
@@ -57,7 +82,9 @@ class Address extends AbstractModel
      */
     public function setCity(City $city)
     {
-        return $this->getLink('city')->set($city);
+        $this->set('city', $city);
+
+        return $this;
     }
 
     /**
@@ -65,7 +92,7 @@ class Address extends AbstractModel
      */
     public function getCountry()
     {
-        return $this->getLink('country')->get();
+        return $this->get('country');
     }
 
     /**
@@ -73,6 +100,8 @@ class Address extends AbstractModel
      */
     public function setCountry(Country $country)
     {
-        return $this->getLink('country')->set($country);
+        $this->set('country', $country);
+
+        return $this;
     }
 }

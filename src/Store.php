@@ -3,7 +3,10 @@
 namespace CL\Purchases;
 
 use Harp\Harp\AbstractModel;
-use Harp\Core\Model\SoftDeleteTrait;
+use Harp\Harp\Config;
+use Harp\Harp\Model\SoftDeleteTrait;
+use Harp\Harp\Rel;
+use Harp\Validate\Assert;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -12,9 +15,22 @@ use Harp\Core\Model\SoftDeleteTrait;
  */
 class Store extends AbstractModel
 {
-    const REPO = 'CL\Purchases\StoreRepo';
-
     use SoftDeleteTrait;
+
+    public static function initialize(Config $config)
+    {
+        SoftDeleteTrait::initialize($config);
+
+        $config
+            ->addRels([
+                new Rel\HasMany('products', $config, Product::getRepo()),
+                new Rel\HasMany('purchases', $config, Purchase::getRepo()),
+            ])
+            ->addAsserts([
+                new Assert\Present('name'),
+                new Assert\LengthLessThan('name', 150),
+            ]);
+    }
 
     public $id;
     public $name;
@@ -24,7 +40,7 @@ class Store extends AbstractModel
      */
     public function getProducts()
     {
-        return $this->getLink('products');
+        return $this->all('products');
     }
 
     /**
@@ -32,6 +48,6 @@ class Store extends AbstractModel
      */
     public function getPurchases()
     {
-        return $this->getLink('purchases');
+        return $this->all('purchases');
     }
 }

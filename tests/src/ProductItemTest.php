@@ -2,7 +2,7 @@
 
 namespace CL\Purchases\Test;
 
-use CL\Purchases\Basket;
+use CL\Purchases\Order;
 use CL\Purchases\Product;
 use CL\Purchases\ProductItem;
 use SebastianBergmann\Money\Money;
@@ -14,6 +14,23 @@ use SebastianBergmann\Money\Currency;
  */
 class ProductItemTest extends AbstractTestCase
 {
+    /**
+     * @covers ::initialize
+     */
+    public function testInitialize()
+    {
+        $productItem = ProductItem::getRepo();
+
+        $order = $productItem->getRelOrError('order');
+        $this->assertEquals('CL\Purchases\Order', $order->getRepo()->getModelClass());
+
+        $items = $productItem->getRelOrError('purchase');
+        $this->assertEquals('CL\Purchases\Purchase', $items->getRepo()->getModelClass());
+
+        $product = $productItem->getRelOrError('product');
+        $this->assertEquals('CL\Purchases\Product', $product->getRepo()->getModelClass());
+    }
+
     /**
      * @covers ::getProduct
      * @covers ::setProduct
@@ -40,7 +57,7 @@ class ProductItemTest extends AbstractTestCase
     public function testGetSourceValue()
     {
         $item = new ProductItem();
-        $item->setBasket(new Basket());
+        $item->setOrder(new Order());
         $item->setProduct(new Product(['currency' => 'EUR', 'value' => 2000]));
 
         $this->assertEquals(new Money(2000, new Currency('EUR')), $item->getSourceValue());
