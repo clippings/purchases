@@ -1,10 +1,18 @@
 language: php
 
 php:
-  - 5.3
   - 5.4
   - 5.5
-  - hhvm
+  - hhvm-nightly
+
+matrix:
+  allow_failures:
+    - php: hhvm-nightly
+
+notifications:
+  email: false
+  slack:
+    secure: db1n+LD54Bo55IndiXJqAnlsIyrRFXGnYE/mS3gLtC/EQxPqfp9zsYvMl3IXuOCE9gc2lNjp/FJATVZMCnCLrP2uX+YlguX8r4+Qv04BQbKbk+q27NVlf+aXqWwK2gGhq1WdjOwqToejxt85518wzNC6FOy12WMsLgq/yT0vymY=
 
 before_install:
   - composer selfupdate
@@ -14,6 +22,8 @@ install:
 
 before_script:
   - mkdir -p build/logs
+  - mysql -e 'create database `clippings/purchases`;'
+  - mysql clippings/purchases < tests/mysql.sql
 
 script:
   - phpunit --coverage-clover build/logs/clover.xml
