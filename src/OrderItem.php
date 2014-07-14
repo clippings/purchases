@@ -9,7 +9,6 @@ use SebastianBergmann\Money\Money;
 use Harp\Harp\Config;
 use Harp\Harp\Rel;
 
-
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
  * @copyright 2014, Clippings Ltd.

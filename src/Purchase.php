@@ -48,7 +48,7 @@ class Purchase extends AbstractModel
     }
 
     /**
-     * @return \Harp\Core\Repo\LinkMany
+     * @return \Harp\Harp\Repo\LinkMany
      */
     public function getItems()
     {
@@ -56,7 +56,7 @@ class Purchase extends AbstractModel
     }
 
     /**
-     * @return \Harp\Core\Repo\LinkMany
+     * @return \Harp\Harp\Repo\LinkMany
      */
     public function getRefunds()
     {

@@ -57,7 +57,7 @@ class Refund extends AbstractModel
     }
 
     /**
-     * @param  array  $defaultParameters
+     * @param  array $defaultParameters
      * @return array
      */
     public function getRequestParameters(array $defaultParameters)
@@ -77,8 +77,8 @@ class Refund extends AbstractModel
     }
 
     /**
-     * @param  GatewayInterface $refund
-     * @param  array            $parameters
+     * @param  GatewayInterface                          $refund
+     * @param  array                                     $parameters
      * @return \Omnipay\Common\Message\ResponseInterface
      */
     public function refund(GatewayInterface $refund, array $parameters)

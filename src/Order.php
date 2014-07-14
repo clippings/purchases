@@ -5,7 +5,6 @@ namespace CL\Purchases;
 use Harp\Harp\Rel;
 use Harp\Harp\Config;
 use Harp\Harp\AbstractModel;
-use Harp\Validate\Assert;
 use Harp\Timestamps\TimestampsTrait;
 use Harp\Money\CurrencyTrait;
 use Harp\RandomKey\RandomKeyTrait;
@@ -46,7 +45,7 @@ class Order extends AbstractModel
     public $billingId;
 
     /**
-     * @return \Harp\Core\Repo\LinkMany
+     * @return \Harp\Harp\Repo\LinkMany
      */
     public function getPurchases()
     {
@@ -54,7 +53,7 @@ class Order extends AbstractModel
     }
 
     /**
-     * @return \Harp\Core\Repo\LinkMany
+     * @return \Harp\Harp\Repo\LinkMany
      */
     public function getItems()
     {
@@ -62,7 +61,7 @@ class Order extends AbstractModel
     }
 
     /**
-     * @return \Harp\Core\Model\Models
+     * @return \Harp\Harp\Model\Models
      */
     public function getProductItems()
     {

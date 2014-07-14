@@ -9,8 +9,6 @@ use Harp\Locations\Country;
 use Harp\Harp\Rel;
 use Harp\Harp\Config;
 use Harp\Validate\Assert;
-use SebastianBergmann\Money\Currency;
-use SebastianBergmann\Money\Money;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>

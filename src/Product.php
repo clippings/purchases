@@ -44,7 +44,7 @@ class Product extends AbstractModel
     public $title;
 
     /**
-     * @return \Harp\Core\Repo\LinkMany
+     * @return \Harp\Harp\Repo\LinkMany
      */
     public function getProductItems()
     {

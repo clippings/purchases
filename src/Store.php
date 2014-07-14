@@ -36,7 +36,7 @@ class Store extends AbstractModel
     public $name;
 
     /**
-     * @return \Harp\Core\Repo\LinkMany
+     * @return \Harp\Harp\Repo\LinkMany
      */
     public function getProducts()
     {
@@ -44,7 +44,7 @@ class Store extends AbstractModel
     }
 
     /**
-     * @return \Harp\Core\Repo\LinkMany
+     * @return \Harp\Harp\Repo\LinkMany
      */
     public function getPurchases()
     {
