@@ -24,7 +24,7 @@ class Store extends AbstractModel
         $config
             ->addRels([
                 new Rel\HasMany('products', $config, Product::getRepo()),
-                new Rel\HasMany('purchases', $config, Purchase::getRepo()),
+                new Rel\HasMany('storePurchases', $config, StorePurchase::getRepo()),
             ])
             ->addAsserts([
                 new Assert\Present('name'),
@@ -46,8 +46,8 @@ class Store extends AbstractModel
     /**
      * @return \Harp\Harp\Repo\LinkMany
      */
-    public function getPurchases()
+    public function getStorePurchases()
     {
-        return $this->all('purchases');
+        return $this->all('storePurchases');
     }
 }

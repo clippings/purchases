@@ -34,15 +34,15 @@ $store2->getProducts()
 Store::saveArray([$store1, $store2]);
 
 // Now we can purchase something
-$order = new Order();
-$order
+$purchase = new Purchase();
+$purchase
     ->addProduct($product1)
     ->addProduct($product2)
     ->addProduct($product3, 2);
 
 // Freeze all the values of the order,
 // so that it remains "frozen", even if prices of products change
-$order->freeze();
+$purchase->freeze();
 
 // Initialize omnipay getway - here you will have Paypal, Stripe etc.
 $gateway = Omnipay::getFactory()->create('Dummy');
@@ -57,17 +57,32 @@ $parameters = [
     'clientIp' => '192.168.0.1',
 ];
 
-$response = $order->purchase($gateway, $parameters);
+$response = $purchase->purchase($gateway, $parameters);
 
 echo $response->isSuccessful();
 ```
 
-Order
------
+Purchase, PurchaseItem, ProductItem And StorePurchase
+-----------------------------------------------------
 
-Order is comprised of "OriderItems", an inherited model wich holds all the items that the user purchases. You'll usually extend OrderItems with items for your specific needs. for exampe "ProductItem".
+    ┌──────────┐    ┌───────┐    ┌──────────┐
+    │ Purchase │    │ Store │    │ Purchase │
+    └─┬─────┬──┘    └─┬─────┘    └─┬────────┘
+      │     ↓         ↓            │
+      │ ┌───────────────┐          │
+      │ │ StorePurchase │          │
+      │ └───────┬───────┘          │
+      │         ↓                  │
+      │     ┌──────────────┐       │
+      └────→│ PurchaseItem │       │
+            ├──────────────┤       │
+            │ ProductItem  │←──────┘
+            └──────────────┘
 
-Each OrderItem however, also belongs to a "Purchase" model. This links the order item to the specific store, for which it is intended.
+Purchase is comprised of "PurchaseItems", a model which holds all the items that the user purchases.ProductItem exteds PurchaseItem so that they share the same table, using IheritedTrait.
+
+Each PurchaseItem however, also belongs to a "StorePurchase" model, that represents the purchase for a specific store. This relation is managed automatically when you add products via the "addProduct" method
+
 
 ## License
 

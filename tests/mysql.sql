@@ -14,8 +14,8 @@ CREATE TABLE `Address` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `Order`;
-CREATE TABLE `Order` (
+DROP TABLE IF EXISTS `Purchase`;
+CREATE TABLE `Purchase` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `uniqueKey` varchar(100),
   `responseData` TEXT,
@@ -31,12 +31,12 @@ CREATE TABLE `Order` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `OrderItem`;
-CREATE TABLE `OrderItem` (
+DROP TABLE IF EXISTS `PurchaseItem`;
+CREATE TABLE `PurchaseItem` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `class` varchar(255),
   `transferId` int(11) UNSIGNED NULL,
-  `purchaseId` int(11) UNSIGNED NULL,
+  `storePurchaseId` int(11) UNSIGNED NULL,
   `refId` int(11) UNSIGNED NULL,
   `quantity` int(11) UNSIGNED NOT NULL DEFAULT 1,
   `value` int(11) NULL,
@@ -56,15 +56,15 @@ CREATE TABLE `Product` (
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP TABLE IF EXISTS `Purchase`;
-CREATE TABLE `Purchase` (
+DROP TABLE IF EXISTS `StorePurchase`;
+CREATE TABLE `StorePurchase` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `uniqueKey` varchar(100),
   `status` TINYINT(1) UNSIGNED NULL,
   `isFrozen` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
   `currency` varchar(3) NULL,
   `value` int(11) NULL,
-  `orderId` int(11) UNSIGNED NULL,
+  `purchaseId` int(11) UNSIGNED NULL,
   `storeId` int(11) UNSIGNED NULL,
   `deletedAt` TIMESTAMP NULL,
   `createdAt` TIMESTAMP NULL,
@@ -80,7 +80,7 @@ CREATE TABLE `Refund` (
   `currency` varchar(3) NULL,
   `value` int(11) NULL,
   `responseData` TEXT,
-  `purchaseId` int(11) UNSIGNED NULL,
+  `storePurchaseId` int(11) UNSIGNED NULL,
   `completedAt` TIMESTAMP NULL,
   `deletedAt` TIMESTAMP NULL,
   PRIMARY KEY  (`id`)
@@ -115,14 +115,14 @@ INSERT INTO `Address`
 VALUES
   (1, 'John', 'Doe', 'john@example.com', '123123', '1000', 'Moskovska', '132', 2, 1);
 
-INSERT INTO `Order`
+INSERT INTO `Purchase`
 (`id`, `uniqueKey`, `responseData`, `currency`, `isSuccessful`, `billingId`, `deletedAt`)
 VALUES
   (1, 'FH2WO3EH', '{"amount":"380.00","reference":"53a43cc327040","success":true,"message":"Success"}', 'GBP', 1, 1, NULL),
   (2, 'FVNDWZEH', NULL, 'GBP', 0, 0, NULL);
 
-INSERT INTO `OrderItem`
-(`id`, `class`, `transferId`, `purchaseId`, `refId`, `value`, `isFrozen`, `deletedAt`)
+INSERT INTO `PurchaseItem`
+(`id`, `class`, `transferId`, `storePurchaseId`, `refId`, `value`, `isFrozen`, `deletedAt`)
 VALUES
   (1, 'CL\\Purchases\\ProductItem', 1, 1, 1, 1000, 1, NULL),
   (2, 'CL\\Purchases\\ProductItem', 1, 1, 2, 2000, 1, NULL),
@@ -130,8 +130,8 @@ VALUES
   (4, 'CL\\Purchases\\ProductItem', 1, 2, 4, 4000, 1, NULL),
   (5, 'CL\\Purchases\\ProductItem', 1, 2, 5, 5000, 1, '2014-02-03 00:00:00');
 
-INSERT INTO `Purchase`
-(`id`, `uniqueKey`, `status`, `orderId`, `storeId`, `createdAt`, `updatedAt`, `deletedAt`)
+INSERT INTO `StorePurchase`
+(`id`, `uniqueKey`, `status`, `purchaseId`, `storeId`, `createdAt`, `updatedAt`, `deletedAt`)
 VALUES
   (1, '32NDWZEH', 2, 1, 1, '2014-01-03 10:00:00', '2014-03-03 12:00:00', NULL),
   (2, 'QTEOCKJT', 2, 1, 1, '2014-01-03 10:00:00', '2014-06-03 12:00:00', NULL);
@@ -148,7 +148,7 @@ VALUES
   (7, 'Product 7', 2, 7000, 'GBP', NULL);
 
 INSERT INTO `Refund`
-(`id`, `responseData`, `isSuccessful`, `isFrozen`, `value`, `currency`, `purchaseId`, `deletedAt`)
+(`id`, `responseData`, `isSuccessful`, `isFrozen`, `value`, `currency`, `storePurchaseId`, `deletedAt`)
 VALUES
 (1, NULL, 1, 1, 4000, 'GBP', 1, NULL);
 

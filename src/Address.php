@@ -25,7 +25,7 @@ class Address extends AbstractModel
             ->addRels([
                 new Rel\BelongsTo('city', $config, City::getRepo()),
                 new Rel\BelongsTo('country', $config, Country::getRepo()),
-                new Rel\HasOne('order', $config, Order::getRepo(), ['foreignKey' => 'billingId']),
+                new Rel\HasOne('purchase', $config, Purchase::getRepo(), ['foreignKey' => 'billingId']),
             ])
             ->addAsserts([
                 new Assert\Present('firstName'),
@@ -50,19 +50,19 @@ class Address extends AbstractModel
     public $countryId;
 
     /**
-     * @return Order
+     * @return Purchase
      */
-    public function getOrder()
+    public function getPurchase()
     {
-        return $this->get('order');
+        return $this->get('purchase');
     }
 
     /**
-     * @param Order $order
+     * @param Purchase $purchase
      */
-    public function setOrder(Order $order)
+    public function setPurchase(Purchase $purchase)
     {
-        $this->set('order', $order);
+        $this->set('purchase', $purchase);
 
         return $this;
     }

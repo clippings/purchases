@@ -14,7 +14,7 @@ use CL\Transfer\ItemGroupTrait;
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class Purchase extends AbstractModel
+class StorePurchase extends AbstractModel
 {
     use TimestampsTrait;
     use RandomKeyTrait;
@@ -27,16 +27,16 @@ class Purchase extends AbstractModel
         RandomKeyTrait::initialize($config);
 
         $config
-            ->setTable('Purchase')
+            ->setTable('StorePurchase')
             ->addRels([
-                new Rel\BelongsTo('order', $config, Order::getRepo()),
+                new Rel\BelongsTo('purchase', $config, Purchase::getRepo()),
                 new Rel\BelongsTo('store', $config, Store::getRepo()),
-                new Rel\HasMany('items', $config, OrderItem::getRepo()),
+                new Rel\HasMany('items', $config, PurchaseItem::getRepo()),
                 new Rel\HasMany('refunds', $config, Refund::getRepo()),
             ]);
     }
 
-    public $orderId;
+    public $purchaseId;
     public $storeId;
 
     /**
@@ -44,7 +44,7 @@ class Purchase extends AbstractModel
      */
     public function getCurrency()
     {
-        return $this->getOrder()->getCurrency();
+        return $this->getPurchase()->getCurrency();
     }
 
     /**
@@ -64,19 +64,19 @@ class Purchase extends AbstractModel
     }
 
     /**
-     * @return Order
+     * @return Purchase
      */
-    public function getOrder()
+    public function getPurchase()
     {
-        return $this->get('order');
+        return $this->get('purchase');
     }
 
     /**
-     * @param Order $order
+     * @param Purchase $purchase
      */
-    public function setOrder(Order $order)
+    public function setPurchase(Purchase $purchase)
     {
-        $this->set('order', $order);
+        $this->set('purchase', $purchase);
 
         return $this;
     }

@@ -2,7 +2,7 @@
 
 namespace CL\Purchases\Test;
 
-use CL\Purchases\Purchase;
+use CL\Purchases\StorePurchase;
 use CL\Purchases\Refund;
 use CL\Purchases\RefundItem;
 use SebastianBergmann\Money\Money;
@@ -21,28 +21,28 @@ class RefundTest extends AbstractTestCase
     {
         $refund = Refund::getRepo();
 
-        $purchase = $refund->getRelOrError('purchase');
-        $this->assertEquals('CL\Purchases\Purchase', $purchase->getRepo()->getModelClass());
+        $storePurchase = $refund->getRelOrError('storePurchase');
+        $this->assertEquals('CL\Purchases\StorePurchase', $storePurchase->getRepo()->getModelClass());
     }
 
     /**
-     * @covers ::getPurchase
-     * @covers ::setPurchase
+     * @covers ::getStorePurchase
+     * @covers ::setStorePurchase
      */
-    public function testPurchase()
+    public function testStorePurchase()
     {
         $refund = new Refund();
 
-        $purchase = $refund->getPurchase();
+        $purchase = $refund->getStorePurchase();
 
-        $this->assertInstanceOf('CL\Purchases\Purchase', $purchase);
+        $this->assertInstanceOf('CL\Purchases\StorePurchase', $purchase);
         $this->assertTrue($purchase->isVoid());
 
-        $purchase = new Purchase();
+        $purchase = new StorePurchase();
 
-        $refund->setPurchase($purchase);
+        $refund->setStorePurchase($purchase);
 
-        $this->assertSame($purchase, $refund->getPurchase());
+        $this->assertSame($purchase, $refund->getStorePurchase());
     }
 
     /**
@@ -86,13 +86,13 @@ class RefundTest extends AbstractTestCase
 
         $currency = new Currency('EUR');
 
-        $purchase = $this->getMock('CL\Purchases\Purchase', ['getCurrency']);
+        $purchase = $this->getMock('CL\Purchases\StorePurchase', ['getCurrency']);
         $purchase
             ->expects($this->once())
             ->method('getCurrency')
             ->will($this->returnValue($currency));
 
-        $refund->setPurchase($purchase);
+        $refund->setStorePurchase($purchase);
 
         $this->assertSame($currency, $refund->getCurrency());
     }

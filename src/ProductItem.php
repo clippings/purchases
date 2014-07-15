@@ -10,7 +10,7 @@ use Harp\Harp\Rel;
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class ProductItem extends OrderItem
+class ProductItem extends PurchaseItem
 {
     public static function initialize(Config $config)
     {

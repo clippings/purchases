@@ -4,7 +4,7 @@ namespace CL\Purchases\Test;
 
 use CL\Purchases\Store;
 use CL\Purchases\Product;
-use CL\Purchases\Purchase;
+use CL\Purchases\StorePurchase;
 
 /**
  * @coversDefaultClass CL\Purchases\Store
@@ -21,8 +21,8 @@ class StoreTest extends AbstractTestCase
         $products = $store->getRelOrError('products');
         $this->assertEquals('CL\Purchases\Product', $products->getRepo()->getModelClass());
 
-        $purchases = $store->getRelOrError('purchases');
-        $this->assertEquals('CL\Purchases\Purchase', $purchases->getRepo()->getModelClass());
+        $storePurchases = $store->getRelOrError('storePurchases');
+        $this->assertEquals('CL\Purchases\StorePurchase', $storePurchases->getRepo()->getModelClass());
 
         $model = new Store();
 
@@ -49,14 +49,14 @@ class StoreTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::getPurchases
+     * @covers ::getStorePurchases
      */
-    public function testPurchases()
+    public function testStorePurchases()
     {
         $store = new Store();
 
-        $items = $store->getPurchases();
+        $items = $store->getStorePurchases();
 
-        $this->assertEquals(Purchase::getRepo(), $items->getRel()->getRepo());
+        $this->assertEquals(StorePurchase::getRepo(), $items->getRel()->getRepo());
     }
 }

@@ -37,8 +37,8 @@ abstract class AbstractTestCase extends PHPUnit_Framework_TestCase
 
         Converter::initialize(new NullSource());
 
-        DB::get()->execute('ALTER TABLE OrderItem AUTO_INCREMENT = 6');
-        DB::get()->execute('ALTER TABLE Purchase AUTO_INCREMENT = 3');
+        DB::get()->execute('ALTER TABLE PurchaseItem AUTO_INCREMENT = 6');
+        DB::get()->execute('ALTER TABLE StorePurchase AUTO_INCREMENT = 3');
 
         DB::get()->setLogger($this->logger);
         DB::get()->beginTransaction();

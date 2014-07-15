@@ -14,7 +14,7 @@ use Harp\Harp\Rel;
  * @copyright 2014, Clippings Ltd.
  * @license   http://spdx.org/licenses/BSD-3-Clause
  */
-class OrderItem extends AbstractModel
+class PurchaseItem extends AbstractModel
 {
     use InheritedTrait;
     use ItemTrait;
@@ -26,19 +26,19 @@ class OrderItem extends AbstractModel
 
         $config
             ->addRels([
-                new Rel\BelongsTo('order', $config, Order::getRepo(), ['key' => 'transferId']),
-                new Rel\BelongsTo('purchase', $config, Purchase::getRepo()),
+                new Rel\BelongsTo('purchase', $config, Purchase::getRepo(), ['key' => 'transferId']),
+                new Rel\BelongsTo('storePurchase', $config, StorePurchase::getRepo()),
             ]);
     }
 
-    public $purchaseId;
+    public $storePurchaseId;
 
     /**
      * @return \SebastianBergmann\Money\Currency
      */
     public function getCurrency()
     {
-        return $this->getOrder()->getCurrency();
+        return $this->getPurchase()->getCurrency();
     }
 
     /**
@@ -59,6 +59,24 @@ class OrderItem extends AbstractModel
     }
 
     /**
+     * @return StorePurchase
+     */
+    public function getStorePurchase()
+    {
+        return $this->get('storePurchase');
+    }
+
+    /**
+     * @param Purchase $purchase
+     */
+    public function setStorePurchase(StorePurchase $storePurchase)
+    {
+        $this->set('storePurchase', $storePurchase);
+
+        return $this;
+    }
+
+    /**
      * @return Purchase
      */
     public function getPurchase()
@@ -72,24 +90,6 @@ class OrderItem extends AbstractModel
     public function setPurchase(Purchase $purchase)
     {
         $this->set('purchase', $purchase);
-
-        return $this;
-    }
-
-    /**
-     * @return Order
-     */
-    public function getOrder()
-    {
-        return $this->get('order');
-    }
-
-    /**
-     * @param Order $order
-     */
-    public function setOrder(Order $order)
-    {
-        $this->set('order', $order);
 
         return $this;
     }

@@ -3,7 +3,7 @@
 namespace CL\Purchases\Test;
 
 use CL\Purchases\Address;
-use CL\Purchases\Order;
+use CL\Purchases\Purchase;
 use Harp\Locations\City;
 use Harp\Locations\Country;
 
@@ -20,8 +20,8 @@ class AddressTest extends AbstractTestCase
     {
         $address = Address::getRepo();
 
-        $order = $address->getRelOrError('order');
-        $this->assertEquals('CL\Purchases\Order', $order->getRepo()->getModelClass());
+        $purchase = $address->getRelOrError('purchase');
+        $this->assertEquals('CL\Purchases\Purchase', $purchase->getRepo()->getModelClass());
 
         $country = $address->getRelOrError('country');
         $this->assertEquals('Harp\Locations\Country', $country->getRepo()->getModelClass());
@@ -81,23 +81,23 @@ class AddressTest extends AbstractTestCase
     }
 
     /**
-     * @covers ::getOrder
-     * @covers ::setOrder
+     * @covers ::getPurchase
+     * @covers ::setPurchase
      */
-    public function testOrder()
+    public function testPurchase()
     {
         $address = new Address();
 
-        $order = $address->getOrder();
+        $purchase = $address->getPurchase();
 
-        $this->assertInstanceOf('CL\Purchases\Order', $order);
-        $this->assertTrue($order->isVoid());
+        $this->assertInstanceOf('CL\Purchases\Purchase', $purchase);
+        $this->assertTrue($purchase->isVoid());
 
-        $order = new Order();
+        $purchase = new Purchase();
 
-        $address->setOrder($order);
+        $address->setPurchase($purchase);
 
-        $this->assertSame($order, $address->getOrder());
+        $this->assertSame($purchase, $address->getPurchase());
     }
 
     /**
@@ -106,11 +106,11 @@ class AddressTest extends AbstractTestCase
     public function testIntegration()
     {
         $address = Address::find(1);
-        $order = Order::find(1);
+        $purchase = Purchase::find(1);
         $country = Country::find(1);
         $city = City::find(2);
 
-        $this->assertSame($order, $address->getOrder());
+        $this->assertSame($purchase, $address->getPurchase());
         $this->assertSame($city, $address->getCity());
         $this->assertSame($country, $address->getCountry());
     }

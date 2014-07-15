@@ -26,34 +26,34 @@ class Refund extends AbstractModel
 
         $config
             ->addRels([
-                new Rel\BelongsTo('purchase', $config, Purchase::getRepo())
+                new Rel\BelongsTo('storePurchase', $config, StorePurchase::getRepo())
             ]);
     }
 
-    public $purchaseId;
+    public $storePurchaseId;
 
     /**
      * @return \SebastianBergmann\Money\Currency
      */
     public function getCurrency()
     {
-        return $this->getPurchase()->getCurrency();
+        return $this->getStorePurchase()->getCurrency();
     }
 
     /**
-     * @return Purchase
+     * @return StorePurchase
      */
-    public function getPurchase()
+    public function getStorePurchase()
     {
-        return $this->get('purchase');
+        return $this->get('storePurchase');
     }
 
     /**
-     * @param Purchase $purchase
+     * @param StorePurchase $storePurchase
      */
-    public function setPurchase(Purchase $purchase)
+    public function setStorePurchase(StorePurchase $purchase)
     {
-        return $this->set('purchase', $purchase);
+        return $this->set('storePurchase', $purchase);
     }
 
     /**
@@ -63,12 +63,12 @@ class Refund extends AbstractModel
     public function getRequestParameters(array $defaultParameters)
     {
         $parameters = $this->getTransferParameters();
-        $purchase = $this->getPurchase();
+        $storePurchase = $this->getStorePurchase();
 
-        $parameters['requestData'] = $purchase->getOrder()->responseData;
+        $parameters['requestData'] = $storePurchase->getPurchase()->responseData;
         $parameters['items'] []= [
-            'name' => $purchase->getId(),
-            'description' => "Refund for {$purchase->uniqueKey}",
+            'name' => $storePurchase->getId(),
+            'description' => "Refund for {$storePurchase->uniqueKey}",
             'price' => (float) ($this->getValue()->getAmount() / 100),
             'quantity' => 1,
         ];
