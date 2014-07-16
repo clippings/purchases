@@ -36,8 +36,13 @@ class Purchase extends AbstractModel
         $config
             ->setTable('Purchase')
             ->addRels([
-                new Rel\HasMany('items', $config, PurchaseItem::getRepo(), ['foreignKey' => 'transferId']),
-                new Rel\HasMany('storePurchases', $config, StorePurchase::getRepo()),
+                new Rel\HasMany('items', $config, PurchaseItem::getRepo(), [
+                    'foreignKey' => 'transferId',
+                    'inverseOf' => 'purchase',
+                ]),
+                new Rel\HasMany('storePurchases', $config, StorePurchase::getRepo(), [
+                    'inverseOf' => 'purchase',
+                ]),
                 new Rel\BelongsTo('billing', $config, Address::getRepo()),
             ]);
     }
@@ -177,7 +182,6 @@ class Purchase extends AbstractModel
 
         $storePurchase = new StorePurchase();
         $storePurchase->setStore($store);
-        $storePurchase->setPurchase($this);
         $this->getStorePurchases()->add($storePurchase);
 
         return $storePurchase;
@@ -202,9 +206,7 @@ class Purchase extends AbstractModel
         $storePurchase = $this->getStorePurchaseForStore($product->getStore());
 
         $item = new ProductItem(['quantity' => $quantity]);
-        $item->setPurchase($this);
         $item->setProduct($product);
-        $item->setStorePurchase($storePurchase);
 
         $storePurchase->getItems()->add($item);
         $this->getItems()->add($item);

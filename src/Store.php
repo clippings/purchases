@@ -23,8 +23,8 @@ class Store extends AbstractModel
 
         $config
             ->addRels([
-                new Rel\HasMany('products', $config, Product::getRepo()),
-                new Rel\HasMany('storePurchases', $config, StorePurchase::getRepo()),
+                new Rel\HasMany('products', $config, Product::getRepo(), ['inverseOf' => 'store']),
+                new Rel\HasMany('storePurchases', $config, StorePurchase::getRepo(), ['inverseOf' => 'store']),
             ])
             ->addAsserts([
                 new Assert\Present('name'),

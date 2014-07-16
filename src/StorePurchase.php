@@ -31,8 +31,8 @@ class StorePurchase extends AbstractModel
             ->addRels([
                 new Rel\BelongsTo('purchase', $config, Purchase::getRepo()),
                 new Rel\BelongsTo('store', $config, Store::getRepo()),
-                new Rel\HasMany('items', $config, PurchaseItem::getRepo()),
-                new Rel\HasMany('refunds', $config, Refund::getRepo()),
+                new Rel\HasMany('items', $config, PurchaseItem::getRepo(), ['inverseOf' => 'storePurchase']),
+                new Rel\HasMany('refunds', $config, Refund::getRepo(), ['inverseOf' => 'storePurchase']),
             ]);
     }
 

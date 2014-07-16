@@ -324,16 +324,16 @@
         },
         {
             "name": "harp-orm/harp",
-            "version": "0.3.0",
+            "version": "0.3.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/harp-orm/harp.git",
-                "reference": "8aaf4e99547dab94f47af7b14f5690eeddab78ac"
+                "reference": "2d8c5f7c6bd598ca031bdd1a225ad9aa1c9d48a5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/harp-orm/harp/zipball/8aaf4e99547dab94f47af7b14f5690eeddab78ac",
-                "reference": "8aaf4e99547dab94f47af7b14f5690eeddab78ac",
+                "url": "https://api.github.com/repos/harp-orm/harp/zipball/2d8c5f7c6bd598ca031bdd1a225ad9aa1c9d48a5",
+                "reference": "2d8c5f7c6bd598ca031bdd1a225ad9aa1c9d48a5",
                 "shasum": ""
             },
             "require": {
@@ -362,7 +362,7 @@
                 }
             ],
             "description": "Light and Flexible ORM without magic",
-            "time": "2014-07-14 15:15:02"
+            "time": "2014-07-16 10:24:31"
         },
         {
             "name": "harp-orm/locations",
@@ -958,17 +958,17 @@
         },
         {
             "name": "symfony/event-dispatcher",
-            "version": "v2.5.1",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/EventDispatcher",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/EventDispatcher.git",
-                "reference": "84533bf98da5486b9395a1d95e9184e04e14aad3"
+                "reference": "2215d2ef6fd7ab24d55576a3d924df575c741762"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/84533bf98da5486b9395a1d95e9184e04e14aad3",
-                "reference": "84533bf98da5486b9395a1d95e9184e04e14aad3",
+                "url": "https://api.github.com/repos/symfony/EventDispatcher/zipball/2215d2ef6fd7ab24d55576a3d924df575c741762",
+                "reference": "2215d2ef6fd7ab24d55576a3d924df575c741762",
                 "shasum": ""
             },
             "require": {
@@ -1013,21 +1013,21 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-08 12:21:33"
+            "time": "2014-07-09 09:05:48"
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v2.5.1",
+            "version": "v2.5.2",
             "target-dir": "Symfony/Component/HttpFoundation",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/HttpFoundation.git",
-                "reference": "d0a2aa18d719606d7e4d21319096c0586aa7fc25"
+                "reference": "32ca1659e64bff5df61668e137bb3c3f64b7ce55"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/d0a2aa18d719606d7e4d21319096c0586aa7fc25",
-                "reference": "d0a2aa18d719606d7e4d21319096c0586aa7fc25",
+                "url": "https://api.github.com/repos/symfony/HttpFoundation/zipball/32ca1659e64bff5df61668e137bb3c3f64b7ce55",
+                "reference": "32ca1659e64bff5df61668e137bb3c3f64b7ce55",
                 "shasum": ""
             },
             "require": {
@@ -1068,7 +1068,7 @@
             ],
             "description": "Symfony HttpFoundation Component",
             "homepage": "http://symfony.com",
-            "time": "2014-07-08 12:21:33"
+            "time": "2014-07-15 14:15:12"
         }
     ],
     "packages-dev": [
