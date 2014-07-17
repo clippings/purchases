@@ -328,12 +328,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/harp-orm/harp.git",
-                "reference": "2d8c5f7c6bd598ca031bdd1a225ad9aa1c9d48a5"
+                "reference": "65efad7d29abd80647b9452ef1214ad77d578523"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/harp-orm/harp/zipball/2d8c5f7c6bd598ca031bdd1a225ad9aa1c9d48a5",
-                "reference": "2d8c5f7c6bd598ca031bdd1a225ad9aa1c9d48a5",
+                "url": "https://api.github.com/repos/harp-orm/harp/zipball/65efad7d29abd80647b9452ef1214ad77d578523",
+                "reference": "65efad7d29abd80647b9452ef1214ad77d578523",
                 "shasum": ""
             },
             "require": {
@@ -362,7 +362,7 @@
                 }
             ],
             "description": "Light and Flexible ORM without magic",
-            "time": "2014-07-16 10:24:31"
+            "time": "2014-07-16 10:39:04"
         },
         {
             "name": "harp-orm/locations",
