@@ -36,6 +36,7 @@ class StorePurchase extends AbstractModel
             ]);
     }
 
+    public $id;
     public $purchaseId;
     public $storeId;
 

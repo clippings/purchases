@@ -26,11 +26,13 @@ class PurchaseItem extends AbstractModel
 
         $config
             ->addRels([
-                new Rel\BelongsTo('purchase', $config, Purchase::getRepo(), ['key' => 'transferId']),
+                new Rel\BelongsTo('purchase', $config, Purchase::getRepo()),
                 new Rel\BelongsTo('storePurchase', $config, StorePurchase::getRepo()),
             ]);
     }
 
+    public $id;
+    public $purchaseId;
     public $storePurchaseId;
 
     /**

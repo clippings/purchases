@@ -36,17 +36,13 @@ class Purchase extends AbstractModel
         $config
             ->setTable('Purchase')
             ->addRels([
-                new Rel\HasMany('items', $config, PurchaseItem::getRepo(), [
-                    'foreignKey' => 'transferId',
-                    'inverseOf' => 'purchase',
-                ]),
-                new Rel\HasMany('storePurchases', $config, StorePurchase::getRepo(), [
-                    'inverseOf' => 'purchase',
-                ]),
+                new Rel\HasMany('items', $config, PurchaseItem::getRepo(), ['inverseOf' => 'purchase']),
+                new Rel\HasMany('storePurchases', $config, StorePurchase::getRepo(), ['inverseOf' => 'purchase']),
                 new Rel\BelongsTo('billing', $config, Address::getRepo()),
             ]);
     }
 
+    public $id;
     public $billingId;
 
     /**

@@ -18,7 +18,7 @@ class ProductItem extends PurchaseItem
 
         $config
             ->addRels([
-                new Rel\BelongsTo('product', $config, Product::getRepo(), ['key' => 'refId']),
+                new Rel\BelongsTo('product', $config, Product::getRepo(), ['key' => 'sourceId']),
             ]);
     }
 

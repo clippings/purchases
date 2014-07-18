@@ -35,9 +35,9 @@ DROP TABLE IF EXISTS `PurchaseItem`;
 CREATE TABLE `PurchaseItem` (
   `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   `class` varchar(255),
-  `transferId` int(11) UNSIGNED NULL,
+  `purchaseId` int(11) UNSIGNED NULL,
   `storePurchaseId` int(11) UNSIGNED NULL,
-  `refId` int(11) UNSIGNED NULL,
+  `sourceId` int(11) UNSIGNED NULL,
   `quantity` int(11) UNSIGNED NOT NULL DEFAULT 1,
   `value` int(11) NULL,
   `isFrozen` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
@@ -122,7 +122,7 @@ VALUES
   (2, 'FVNDWZEH', NULL, 'GBP', 0, 0, NULL);
 
 INSERT INTO `PurchaseItem`
-(`id`, `class`, `transferId`, `storePurchaseId`, `refId`, `value`, `isFrozen`, `deletedAt`)
+(`id`, `class`, `purchaseId`, `storePurchaseId`, `sourceId`, `value`, `isFrozen`, `deletedAt`)
 VALUES
   (1, 'CL\\Purchases\\ProductItem', 1, 1, 1, 1000, 1, NULL),
   (2, 'CL\\Purchases\\ProductItem', 1, 1, 2, 2000, 1, NULL),
