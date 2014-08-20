@@ -199,13 +199,26 @@ class Purchase extends AbstractModel
             }
         }
 
-        $storePurchase = $this->getStorePurchaseForStore($product->getStore());
-
         $item = new ProductItem(['quantity' => $quantity]);
         $item->setProduct($product);
 
-        $storePurchase->getItems()->add($item);
-        $this->getItems()->add($item);
+        $this->addPurchaseItem($product->getStore(), $item);
+
+        return $this;
+    }
+
+    /**
+     * Add a purchase item, also find or create the appropriate store purchase and add it as well
+     *
+     * @param Store        $store
+     * @param PurchaseItem $item
+     * @return self
+     */
+    public function addPurchaseItem(Store $store, PurchaseItem $item)
+    {
+        $storePurchase = $this->getStorePurchaseForStore($store);
+
+        $storePurchase->addPurchaseItem($item);
 
         return $this;
     }

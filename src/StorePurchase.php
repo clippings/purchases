@@ -49,6 +49,19 @@ class StorePurchase extends AbstractModel
     }
 
     /**
+     * Add a purchase item by updateing this and the parent purchase as well
+     *
+     * @param PurchaseItem $item
+     */
+    public function addPurchaseItem(PurchaseItem $item)
+    {
+        $this->getItems()->add($item);
+        $this->getPurchase()->getItems()->add($item);
+
+        return $this;
+    }
+
+    /**
      * @return \Harp\Harp\Repo\LinkMany
      */
     public function getItems()

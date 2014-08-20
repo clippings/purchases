@@ -177,6 +177,32 @@ class PurchaseTest extends AbstractTestCase
     }
 
     /**
+     * @covers ::addPurchaseItem
+     */
+    public function testAddPurchaseItem()
+    {
+        $purchase = $this->getMock('CL\Purchases\Purchase', ['getStorePurchaseForStore']);
+
+        $store = new Store();
+        $storePurchase = new StorePurchase();
+        $storePurchase->setStore($store);
+        $purchase->getStorePurchases()->add($storePurchase);
+
+        $purchase
+            ->expects($this->once())
+            ->method('getStorePurchaseForStore')
+            ->with($this->identicalTo($store))
+            ->will($this->returnValue($storePurchase));
+
+        $purchaseItem = new PurchaseItem();
+        $purchase->addPurchaseItem($store, $purchaseItem);
+
+        $this->assertTrue($purchase->getItems()->has($purchaseItem));
+        $this->assertTrue($storePurchase->getItems()->has($purchaseItem));
+    }
+
+
+    /**
      * @covers ::getStorePurchaseForStore
      */
     public function testGetStorePurchaseForStore()

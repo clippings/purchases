@@ -39,8 +39,8 @@ class IntegrationTest extends AbstractTestCase
         $parameters = [
             'card' => [
                 'number' => '4242424242424242',
-                'expiryMonth' => 7,
-                'expiryYear' => 2014,
+                'expiryMonth' => 12,
+                'expiryYear' => date('Y'),
                 'cvv' => 123,
             ],
             'clientIp' => '192.168.0.1',

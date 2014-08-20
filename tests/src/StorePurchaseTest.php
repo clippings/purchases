@@ -52,23 +52,40 @@ class StorePurchaseTest extends AbstractTestCase
     }
 
     /**
+     * @covers ::addPurchaseItem
+     */
+    public function testAddPurchaseItem()
+    {
+        $storePurchase = new StorePurchase();
+        $purchase = new Purchase();
+        $purchaseItem = new PurchaseItem();
+
+        $storePurchase->setPurchase($purchase);
+
+        $storePurchase->addPurchaseItem($purchaseItem);
+
+        $this->assertTrue($storePurchase->getItems()->has($purchaseItem));
+        $this->assertTrue($purchase->getItems()->has($purchaseItem));
+    }
+
+    /**
      * @covers ::getPurchase
      * @covers ::setPurchase
      */
     public function testPurchase()
     {
-        $product = new StorePurchase();
+        $storePurchase = new StorePurchase();
 
-        $store = $product->getPurchase();
+        $purchase = $storePurchase->getPurchase();
 
-        $this->assertInstanceOf('CL\Purchases\Purchase', $store);
-        $this->assertTrue($store->isVoid());
+        $this->assertInstanceOf('CL\Purchases\Purchase', $purchase);
+        $this->assertTrue($purchase->isVoid());
 
-        $store = new Purchase();
+        $purchase = new Purchase();
 
-        $product->setPurchase($store);
+        $storePurchase->setPurchase($purchase);
 
-        $this->assertSame($store, $product->getPurchase());
+        $this->assertSame($purchase, $storePurchase->getPurchase());
     }
 
     /**
@@ -76,9 +93,9 @@ class StorePurchaseTest extends AbstractTestCase
      */
     public function testItems()
     {
-        $product = new StorePurchase();
+        $storePurchase = new StorePurchase();
 
-        $items = $product->getItems();
+        $items = $storePurchase->getItems();
 
         $this->assertEquals(PurchaseItem::getRepo(), $items->getRel()->getRepo());
     }
@@ -88,9 +105,9 @@ class StorePurchaseTest extends AbstractTestCase
      */
     public function testRefunds()
     {
-        $product = new StorePurchase();
+        $storePurchase = new StorePurchase();
 
-        $refunds = $product->getRefunds();
+        $refunds = $storePurchase->getRefunds();
 
         $this->assertEquals(Refund::getRepo(), $refunds->getRel()->getRepo());
     }
@@ -100,7 +117,7 @@ class StorePurchaseTest extends AbstractTestCase
      */
     public function testCurrency()
     {
-        $purchase = new StorePurchase();
+        $storePurchase = new StorePurchase();
 
         $currency = new Currency('EUR');
 
@@ -110,8 +127,8 @@ class StorePurchaseTest extends AbstractTestCase
             ->method('getCurrency')
             ->will($this->returnValue($currency));
 
-        $purchase->setPurchase($order);
+        $storePurchase->setPurchase($order);
 
-        $this->assertSame($currency, $purchase->getCurrency());
+        $this->assertSame($currency, $storePurchase->getCurrency());
     }
 }
