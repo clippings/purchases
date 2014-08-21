@@ -157,7 +157,7 @@ class Purchase extends AbstractModel
                     'description' => "Items from {$storePurchase->getStore()->name}",
                     'price' => (float) ($storePurchase->getValue()->getAmount() / 100),
                     'quantity' => 1,
-                ]
+                ];
             }
         );
 
@@ -242,8 +242,8 @@ class Purchase extends AbstractModel
     }
 
     /**
-     * @param  GatewayInterface $gateway
-     * @param  array            $parameters
+     * @param  GatewayInterface                          $gateway
+     * @param  array                                     $parameters
      * @return \Omnipay\Common\Message\ResponseInterface
      */
     public function purchase(GatewayInterface $gateway, array $parameters = array())
@@ -252,8 +252,8 @@ class Purchase extends AbstractModel
     }
 
     /**
-     * @param  GatewayInterface $gateway
-     * @param  array            $parameters
+     * @param  GatewayInterface                          $gateway
+     * @param  array                                     $parameters
      * @return \Omnipay\Common\Message\ResponseInterface
      */
     public function complete(GatewayInterface $gateway, array $parameters = array())
