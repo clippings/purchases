@@ -7,6 +7,7 @@ use CL\Purchases\Purchase;
 use CL\Purchases\StorePurchase;
 use CL\Purchases\Refund;
 use CL\Purchases\PurchaseItem;
+use SebastianBergmann\Money\Money;
 use SebastianBergmann\Money\Currency;
 
 /**
@@ -110,6 +111,63 @@ class StorePurchaseTest extends AbstractTestCase
         $refunds = $storePurchase->getRefunds();
 
         $this->assertEquals(Refund::getRepo(), $refunds->getRel()->getRepo());
+    }
+
+    /**
+     * @covers ::getRefundsValue
+     */
+    public function testGetRefundsValue()
+    {
+        $storePurchase = new StorePurchase();
+
+        $storePurchase->getRefunds()
+            ->add(new Refund(['value' => 100]))
+            ->add(new Refund(['value' => 1000]))
+            ->add(new Refund(['value' => 300]));
+
+        $this->assertEquals(new Money(1400, $storePurchase->getCurrency()), $storePurchase->getRefundsValue());
+    }
+
+    public function dataGetRemainingValue()
+    {
+        return [
+            [1000, 800, 200],
+            [1000, 200, 800],
+        ];
+    }
+
+    /**
+     * @dataProvider dataGetRemainingValue
+     * @covers ::getRemainingValue
+     */
+    public function testGetRemainingValue($value, $refundsValue, $expected)
+    {
+        $storePurchase = $this->getMock('CL\Purchases\StorePurchase', ['getRefundsValue'], [['value' => $value, 'isFrozen' => true]]);
+
+        $storePurchase
+            ->expects($this->once())
+            ->method('getRefundsValue')
+            ->will($this->returnValue(new Money($refundsValue, $storePurchase->getCurrency())));
+
+        $this->assertEquals(new Money($expected, $storePurchase->getCurrency()), $storePurchase->getRemainingValue());
+    }
+
+    /**
+     * @covers ::isFullyRefunded
+     */
+    public function testIsFullyRefunded()
+    {
+        $storePurchase = new StorePurchase(['value' => 1000, 'isFrozen' => true]);
+
+        $this->assertFalse($storePurchase->isFullyRefunded());
+
+        $storePurchase->getRefunds()->add(new Refund(['value' => 100]));
+
+        $this->assertFalse($storePurchase->isFullyRefunded());
+
+        $storePurchase->getRefunds()->add(new Refund(['value' => 900]));
+
+        $this->assertTrue($storePurchase->isFullyRefunded());
     }
 
     /**

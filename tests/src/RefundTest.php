@@ -3,6 +3,7 @@
 namespace CL\Purchases\Test;
 
 use CL\Purchases\StorePurchase;
+use CL\Purchases\Purchase;
 use CL\Purchases\Refund;
 use CL\Purchases\RefundItem;
 use SebastianBergmann\Money\Money;
@@ -23,6 +24,27 @@ class RefundTest extends AbstractTestCase
 
         $storePurchase = $refund->getRelOrError('storePurchase');
         $this->assertEquals('CL\Purchases\StorePurchase', $storePurchase->getRepo()->getModelClass());
+
+        $refund = new Refund(['isFrozen' => true]);
+
+        $storePurchase = $this->getMock('CL\Purchases\StorePurchase', ['getRemainingValue']);
+        $storePurchase
+            ->expects($this->exactly(4))
+            ->method('getRemainingValue')
+            ->will($this->returnValue(new Money(800, $storePurchase->getCurrency())));
+
+        $refund->setStorePurchase($storePurchase);
+
+        $this->assertFalse($refund->validate());
+
+        $refund->value = 800;
+        $this->assertTrue($refund->validate());
+
+        $refund->value = 300;
+        $this->assertTrue($refund->validate());
+
+        $refund->value = -300;
+        $this->assertFalse($refund->validate());
     }
 
     /**
