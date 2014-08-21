@@ -9,6 +9,7 @@ use Harp\Harp\Rel;
 use Harp\Harp\Config;
 use Harp\Money\ValueTrait;
 use Harp\Harp\AbstractModel;
+use Harp\Validate\Assert;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -29,9 +30,20 @@ class Refund extends AbstractModel
         $config
             ->addRels([
                 new Rel\BelongsTo('storePurchase', $config, StorePurchase::getRepo())
+            ])
+            ->addAsserts([
+                new Assert\GreaterThan('value', 0),
+                new Assert\Callback('value', function ($refund) {
+                    return $refund->getValue()->lessThanOrEqual(
+                        $refund->getStorePurchase()->getRemainingValue()
+                    );
+                }, ':name is more than the remaining value'),
             ]);
     }
 
+    /**
+     * @var integer
+     */
     public $storePurchaseId;
 
     /**
@@ -83,7 +95,7 @@ class Refund extends AbstractModel
      * @param  array                                     $parameters
      * @return \Omnipay\Common\Message\ResponseInterface
      */
-    public function refund(GatewayInterface $refund, array $parameters)
+    public function refund(GatewayInterface $refund, array $parameters = array())
     {
         return $this->execute($refund, 'refund', $parameters);
     }

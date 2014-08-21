@@ -8,6 +8,7 @@ use Harp\Timestamps\TimestampsTrait;
 use Harp\RandomKey\RandomKeyTrait;
 use Harp\Harp\AbstractModel;
 use CL\Transfer\ItemGroupTrait;
+use SebastianBergmann\Money\Money;
 
 /**
  * @author    Ivan Kerin <ikerin@gmail.com>
@@ -36,8 +37,19 @@ class StorePurchase extends AbstractModel
             ]);
     }
 
+    /**
+     * @var integer
+     */
     public $id;
+
+    /**
+     * @var integer
+     */
     public $purchaseId;
+
+    /**
+     * @var integer
+     */
     public $storeId;
 
     /**
@@ -75,6 +87,43 @@ class StorePurchase extends AbstractModel
     public function getRefunds()
     {
         return $this->all('refunds');
+    }
+
+    /**
+     * Sum the values from all the refunds,
+     * if there are no refunds return Money(0)
+     *
+     * @return Money
+     */
+    public function getRefundsValue()
+    {
+        $prices = $this->getRefunds()->map(function ($item) {
+            return $item->getValue()->getAmount();
+        });
+
+        return new Money(array_sum($prices), $this->getCurrency());
+    }
+
+    /**
+     * Return the value for this store purchase that is not refunded yet
+     * (Value - RefundsValue)
+     *
+     * @return Money
+     */
+    public function getRemainingValue()
+    {
+        return $this->getValue()->subtract($this->getRefundsValue());
+    }
+
+    /**
+     * Check if all the money for this purchase has been refunded
+     * If no refunds have been made, will return false
+     *
+     * @return boolean
+     */
+    public function isFullyRefunded()
+    {
+        return (count($this->getRefunds()) > 0 and $this->getRemainingValue()->getAmount() === 0);
     }
 
     /**

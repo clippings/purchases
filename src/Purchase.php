@@ -42,7 +42,14 @@ class Purchase extends AbstractModel
             ]);
     }
 
+    /**
+     * @var integer
+     */
     public $id;
+
+    /**
+     * @var integer
+     */
     public $billingId;
 
     /**
@@ -71,6 +78,11 @@ class Purchase extends AbstractModel
         });
     }
 
+    /**
+     * Call "freeze" on all StorePurchases related to this purchase
+     *
+     * @return static
+     */
     public function freezeStorePurchases()
     {
         foreach ($this->getStorePurchases() as $purchase) {
@@ -80,6 +92,11 @@ class Purchase extends AbstractModel
         return $this;
     }
 
+    /**
+     * Call "unfreeze" on all StorePurchases related to this purchase
+     *
+     * @return static
+     */
     public function unfreezeStorePurchases()
     {
         foreach ($this->getStorePurchases() as $purchase) {
@@ -91,6 +108,7 @@ class Purchase extends AbstractModel
 
     /**
      * Freeze all items and purchases
+     * Extends FreezableTrait
      */
     public function performFreeze()
     {
@@ -102,6 +120,7 @@ class Purchase extends AbstractModel
 
     /**
      * Unfreeze all items and purchases
+     * Extends FreezableTrait
      */
     public function performUnfreeze()
     {
@@ -165,8 +184,9 @@ class Purchase extends AbstractModel
 
     /**
      * Find a purchase for the given Store or create a new one
+     *
      * @param  Store  $store
-     * @return Purchase
+     * @return static
      */
     public function getStorePurchaseForStore(Store $store)
     {
@@ -189,6 +209,7 @@ class Purchase extends AbstractModel
      *
      * @param Product $product
      * @param integer $quantity
+     * @return static
      */
     public function addProduct(Product $product, $quantity = 1)
     {
@@ -212,7 +233,7 @@ class Purchase extends AbstractModel
      *
      * @param Store        $store
      * @param PurchaseItem $item
-     * @return self
+     * @return static
      */
     public function addPurchaseItem(Store $store, PurchaseItem $item)
     {
@@ -228,7 +249,7 @@ class Purchase extends AbstractModel
      * @param  array            $parameters
      * @return \Omnipay\Common\Message\ResponseInterface
      */
-    public function purchase(GatewayInterface $gateway, array $parameters)
+    public function purchase(GatewayInterface $gateway, array $parameters = array())
     {
         return $this->execute($gateway, 'purchase', $parameters);
     }
@@ -238,7 +259,7 @@ class Purchase extends AbstractModel
      * @param  array            $parameters
      * @return \Omnipay\Common\Message\ResponseInterface
      */
-    public function complete(GatewayInterface $gateway, array $parameters)
+    public function complete(GatewayInterface $gateway, array $parameters = array())
     {
         return $this->execute($gateway, 'complete', $parameters);
     }

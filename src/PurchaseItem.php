@@ -33,8 +33,19 @@ class PurchaseItem extends AbstractModel
             ]);
     }
 
+    /**
+     * @var integer
+     */
     public $id;
+
+    /**
+     * @var integer
+     */
     public $purchaseId;
+
+    /**
+     * @var integer
+     */
     public $storePurchaseId;
 
     /**
@@ -46,6 +57,8 @@ class PurchaseItem extends AbstractModel
     }
 
     /**
+     * This method should be extended to provide the actual value of a referenced model
+     *
      * @return Money
      */
     public function getSourceValue()
@@ -55,6 +68,7 @@ class PurchaseItem extends AbstractModel
 
     /**
      * Value * Quantity
+     *
      * @return Money
      */
     public function getTotalValue()

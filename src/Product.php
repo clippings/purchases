@@ -38,10 +38,21 @@ class Product extends AbstractModel
             ]);
     }
 
+    /**
+     * @var integer
+     */
     public $id;
+
+    /**
+     * @var string
+     */
     public $name;
+
+    /**
+     * @var integer
+     */
     public $storeId;
-    public $title;
+
 
     /**
      * @return \Harp\Harp\Repo\LinkMany

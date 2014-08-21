@@ -32,7 +32,14 @@ class Store extends AbstractModel
             ]);
     }
 
+    /**
+     * @var integer
+     */
     public $id;
+
+    /**
+     * @var string
+     */
     public $name;
 
     /**

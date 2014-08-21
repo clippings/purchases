@@ -38,15 +38,55 @@ class Address extends AbstractModel
             ]);
     }
 
+    /**
+     * @var integer
+     */
     public $id;
+
+    /**
+     * @var string
+     */
     public $firstName;
+
+    /**
+     * @var string
+     */
     public $lastName;
+
+    /**
+     * @var string
+     */
     public $email;
+
+    /**
+     * @var string
+     */
     public $phone;
+
+    /**
+     * @var string
+     */
     public $postCode;
+
+    /**
+     * @var string
+     */
     public $line1;
+
+
+    /**
+     * @var string
+     */
     public $line2;
+
+    /**
+     * @var integer
+     */
     public $cityId;
+
+    /**
+     * @var integer
+     */
     public $countryId;
 
     /**
