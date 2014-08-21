@@ -4,6 +4,7 @@ namespace CL\Purchases;
 
 use CL\Transfer\TransferTrait;
 use Omnipay\Common\GatewayInterface;
+use Harp\Timestamps\TimestampsTrait;
 use Harp\Harp\Rel;
 use Harp\Harp\Config;
 use Harp\Money\ValueTrait;
@@ -17,6 +18,7 @@ use Harp\Harp\AbstractModel;
 class Refund extends AbstractModel
 {
     use TransferTrait;
+    use TimestampsTrait;
     use ValueTrait;
 
     public static function initialize(Config $config)

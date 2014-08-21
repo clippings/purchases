@@ -6,6 +6,7 @@ use Harp\Harp\AbstractModel;
 use Harp\Harp\Model\InheritedTrait;
 use CL\Transfer\ItemTrait;
 use SebastianBergmann\Money\Money;
+use Harp\Timestamps\TimestampsTrait;
 use Harp\Harp\Config;
 use Harp\Harp\Rel;
 
@@ -17,6 +18,7 @@ use Harp\Harp\Rel;
 class PurchaseItem extends AbstractModel
 {
     use InheritedTrait;
+    use TimestampsTrait;
     use ItemTrait;
 
     public static function initialize(Config $config)

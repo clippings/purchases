@@ -41,6 +41,8 @@ CREATE TABLE `PurchaseItem` (
   `quantity` int(11) UNSIGNED NOT NULL DEFAULT 1,
   `value` int(11) NULL,
   `isFrozen` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+  `createdAt` TIMESTAMP NULL,
+  `updatedAt` TIMESTAMP NULL,
   `deletedAt` TIMESTAMP NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -82,6 +84,8 @@ CREATE TABLE `Refund` (
   `responseData` TEXT,
   `storePurchaseId` int(11) UNSIGNED NULL,
   `completedAt` TIMESTAMP NULL,
+  `updatedAt` TIMESTAMP NULL,
+  `createdAt` TIMESTAMP NULL,
   `deletedAt` TIMESTAMP NULL,
   PRIMARY KEY  (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
