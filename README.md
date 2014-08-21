@@ -65,19 +65,21 @@ echo $response->isSuccessful();
 A diagram of the models
 -----------------------
 
-  ┌─────────┐   ┌──────────┐    ┌───────┐
-  │ Address ├──→│ Purchase │    │ Store │
-  └─────────┘   └─┬─────┬──┘    └─┬─────┘
-                  │     ↓         ↓
-                  │ ┌───────────────┐
-                  │ │ StorePurchase │
-                  │ └───────┬───────┘
-                  │         ↓
-                  │     ┌──────────────┐
-                  └────→│ PurchaseItem │
-  ┌─────────┐           ├──────────────┤
-  │ Product ├──────────→│ ProductItem  │
-  └─────────┘           └──────────────┘
+```
+┌─────────┐   ┌──────────┐    ┌───────┐
+│ Address ├──→│ Purchase │    │ Store │
+└─────────┘   └─┬─────┬──┘    └─┬─────┘
+                │     ↓         ↓
+                │ ┌───────────────┐
+                │ │ StorePurchase │
+                │ └───────┬───────┘
+                │         ↓
+                │     ┌──────────────┐
+                └────→│ PurchaseItem │
+┌─────────┐           ├──────────────┤
+│ Product ├──────────→│ ProductItem  │
+└─────────┘           └──────────────┘
+```
 
 Purchase is comprised of "PurchaseItems", a model which holds all the items that the user purchases.ProductItem exteds PurchaseItem so that they share the same table, using IheritedTrait.
 
@@ -137,10 +139,12 @@ echo $productItem->getValue();
 
 Freezing works by setting an "isFrozen" flag explicitly, so that later calls on ``freeze()`` will not recalculate values. You can take advantage of this by explicitly setting this flag to false for specific items and calling ``freeze()`` againg, to "refreeze" those values.
 
+If you freeze a Purchase all the related PurchaseItems and StorePurchases will be frozen alongside it.
+
 Currency Calculatens
 --------------------
 
-Purchases have a "currency" value that all the purchase items use. Any products with different currency will be converted using (harp-orm/money)[https://github.com/harp-orm/money]. That's why purchase items will not function properly, until they are attached to a purchase, which holds the currency for them.
+Purchases have a "currency" value that all the purchase items use. Any products with different currency will be converted using [harp-orm/money](https://github.com/harp-orm/money). That's why purchase items will not function properly, until they are attached to a purchase, which holds the currency for them.
 
 ```php
 $purchase = new Purchase(['currency' => 'GBP']);

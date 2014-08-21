@@ -53,7 +53,6 @@ class Product extends AbstractModel
      */
     public $storeId;
 
-
     /**
      * @return \Harp\Harp\Repo\LinkMany
      */

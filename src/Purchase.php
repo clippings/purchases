@@ -85,9 +85,7 @@ class Purchase extends AbstractModel
      */
     public function freezeStorePurchases()
     {
-        foreach ($this->getStorePurchases() as $purchase) {
-            $purchase->freeze();
-        }
+        $this->getStorePurchases()->invoke('freeze');
 
         return $this;
     }
@@ -99,9 +97,7 @@ class Purchase extends AbstractModel
      */
     public function unfreezeStorePurchases()
     {
-        foreach ($this->getStorePurchases() as $purchase) {
-            $purchase->unfreeze();
-        }
+        $this->getStorePurchases()->invoke('unfreeze');
 
         return $this;
     }
@@ -147,23 +143,23 @@ class Purchase extends AbstractModel
     }
 
     /**
-     * @param  array  $defaultParameters
+     * @param  array $defaultParameters
      * @return array
      */
     public function getRequestParameters(array $defaultParameters)
     {
         $parameters = $this->getTransferParameters();
 
-        $parameters['items'] = [];
-
-        foreach ($this->getStorePurchases() as $storePurchase) {
-            $parameters['items'] []= [
-                'name' => $storePurchase->getId(),
-                'description' => "Items from {$storePurchase->getStore()->name}",
-                'price' => (float) ($storePurchase->getValue()->getAmount() / 100),
-                'quantity' => 1,
-            ];
-        }
+        $parameters['items'] = $this->getStorePurchases()->map(
+            function (StorePurchase $storePurchase) {
+                return [
+                    'name' => $storePurchase->getId(),
+                    'description' => "Items from {$storePurchase->getStore()->name}",
+                    'price' => (float) ($storePurchase->getValue()->getAmount() / 100),
+                    'quantity' => 1,
+                ]
+            }
+        );
 
         $billing = $this->getBilling();
 
@@ -186,7 +182,7 @@ class Purchase extends AbstractModel
      * Find a purchase for the given Store or create a new one
      *
      * @param  Store  $store
-     * @return static
+     * @return \CL\Purchases\StorePurchase
      */
     public function getStorePurchaseForStore(Store $store)
     {
@@ -207,8 +203,8 @@ class Purchase extends AbstractModel
      * Add a ProductItem for the given product / quantity.
      * If product item exists, increase the quantity
      *
-     * @param Product $product
-     * @param integer $quantity
+     * @param  Product $product
+     * @param  integer $quantity
      * @return static
      */
     public function addProduct(Product $product, $quantity = 1)
@@ -216,6 +212,7 @@ class Purchase extends AbstractModel
         foreach ($this->getProductItems() as $item) {
             if ($item->getProduct() === $product) {
                 $item->quantity += $quantity;
+
                 return $this;
             }
         }
@@ -231,8 +228,8 @@ class Purchase extends AbstractModel
     /**
      * Add a purchase item, also find or create the appropriate store purchase and add it as well
      *
-     * @param Store        $store
-     * @param PurchaseItem $item
+     * @param  Store        $store
+     * @param  PurchaseItem $item
      * @return static
      */
     public function addPurchaseItem(Store $store, PurchaseItem $item)

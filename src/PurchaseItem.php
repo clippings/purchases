@@ -25,6 +25,7 @@ class PurchaseItem extends AbstractModel
     {
         ItemTrait::initialize($config);
         InheritedTrait::initialize($config);
+        TimestampsTrait::initialize($config);
 
         $config
             ->addRels([
@@ -85,7 +86,8 @@ class PurchaseItem extends AbstractModel
     }
 
     /**
-     * @param Purchase $purchase
+     * @param  StorePurchase $storePurchase
+     * @return static
      */
     public function setStorePurchase(StorePurchase $storePurchase)
     {
@@ -104,6 +106,7 @@ class PurchaseItem extends AbstractModel
 
     /**
      * @param Purchase $purchase
+     * @return static
      */
     public function setPurchase(Purchase $purchase)
     {

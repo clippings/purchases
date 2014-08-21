@@ -73,7 +73,6 @@ class Address extends AbstractModel
      */
     public $line1;
 
-
     /**
      * @var string
      */

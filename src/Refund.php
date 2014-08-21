@@ -26,6 +26,7 @@ class Refund extends AbstractModel
     {
         ValueTrait::initialize($config);
         TransferTrait::initialize($config);
+        TimestampsTrait::initialize($config);
 
         $config
             ->addRels([
@@ -65,9 +66,9 @@ class Refund extends AbstractModel
     /**
      * @param StorePurchase $storePurchase
      */
-    public function setStorePurchase(StorePurchase $purchase)
+    public function setStorePurchase(StorePurchase $storePurchase)
     {
-        return $this->set('storePurchase', $purchase);
+        return $this->set('storePurchase', $storePurchase);
     }
 
     /**
