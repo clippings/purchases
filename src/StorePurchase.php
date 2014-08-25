@@ -6,6 +6,7 @@ use Harp\Harp\Config;
 use Harp\Harp\Rel;
 use Harp\Timestamps\TimestampsTrait;
 use Harp\RandomKey\RandomKeyTrait;
+use Harp\Money\MoneyObjects;
 use Harp\Harp\AbstractModel;
 use CL\Transfer\ItemGroupTrait;
 use SebastianBergmann\Money\Money;
@@ -97,11 +98,7 @@ class StorePurchase extends AbstractModel
      */
     public function getRefundsValue()
     {
-        $prices = $this->getRefunds()->map(function ($item) {
-            return $item->getValue()->getAmount();
-        });
-
-        return new Money(array_sum($prices), $this->getCurrency());
+        return MoneyObjects::sum($this->getRefunds()->invoke('getValue'));
     }
 
     /**

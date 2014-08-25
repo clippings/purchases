@@ -7,6 +7,7 @@ use Harp\Harp\Config;
 use Harp\Harp\AbstractModel;
 use Harp\Timestamps\TimestampsTrait;
 use Harp\Money\CurrencyTrait;
+use Harp\Money\MoneyObjects;
 use Harp\RandomKey\RandomKeyTrait;
 use CL\Transfer\TransferTrait;
 use CL\Transfer\ItemGroupTrait;
@@ -76,6 +77,14 @@ class Purchase extends AbstractModel
         return $this->getItems()->filter(function (PurchaseItem $item) {
             return $item instanceof ProductItem;
         });
+    }
+
+    /**
+     * @return \SebastianBergmann\Money\Money
+     */
+    public function getProductItemsValue()
+    {
+        return MoneyObjects::sum($this->getProductItems()->invoke('getValue'));
     }
 
     /**

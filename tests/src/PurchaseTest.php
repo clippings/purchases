@@ -9,6 +9,7 @@ use CL\Purchases\Store;
 use CL\Purchases\StorePurchase;
 use CL\Purchases\Product;
 use Omnipay\Omnipay;
+use SebastianBergmann\Money\Money;
 
 /**
  * @coversDefaultClass CL\Purchases\Purchase
@@ -79,7 +80,7 @@ class PurchaseTest extends AbstractTestCase
     /**
      * @covers ::getProductItems
      */
-    public function testProductItems()
+    public function testGetProductItems()
     {
         $purchase = Purchase::find(1);
 
@@ -88,6 +89,16 @@ class PurchaseTest extends AbstractTestCase
         $productItems = $purchase->getProductItems();
 
         $this->assertSame($items->toArray(), $productItems->toArray());
+    }
+
+    /**
+     * @covers ::getProductItemsValue
+     */
+    public function testGetProductItemsValue()
+    {
+        $purchase = Purchase::find(1);
+
+        $this->assertEquals(new Money(10000, $purchase->getCurrency()), $purchase->getProductItemsValue());
     }
 
     /**

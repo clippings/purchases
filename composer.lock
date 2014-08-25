@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ef2e90ca975a659e044ab3da078ef781",
+    "hash": "ef21b8de8714eea4d0b31ff7339c1978",
     "packages": [
         {
             "name": "clippings/currency-convert",
@@ -82,15 +82,21 @@
         },
         {
             "name": "clippings/transfer",
-            "version": "0.2.1",
+            "version": "0.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/clippings/transfer.git",
-                "reference": "0be32c301273c36a7e683ab031467d0dd68a5909"
+                "reference": "e06a6b5e4c18de499b5c6920ef9305898a361600"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/clippings/transfer/zipball/e06a6b5e4c18de499b5c6920ef9305898a361600",
+                "reference": "e06a6b5e4c18de499b5c6920ef9305898a361600",
+                "shasum": ""
             },
             "require": {
                 "harp-orm/harp": "~0.3.0",
-                "harp-orm/money": "~0.2.0",
+                "harp-orm/money": "~0.2.1",
                 "omnipay/dummy": "~2.0",
                 "php": ">=5.4.0"
             },
@@ -114,7 +120,11 @@
                 }
             ],
             "description": "Persistent Omnipay Request / Response Objects",
-            "time": "2014-08-21 09:28:17"
+            "support": {
+                "source": "https://github.com/clippings/transfer/tree/0.2.2",
+                "issues": "https://github.com/clippings/transfer/issues"
+            },
+            "time": "2014-08-25 08:37:42"
         },
         {
             "name": "guzzle/common",
@@ -428,16 +438,16 @@
         },
         {
             "name": "harp-orm/money",
-            "version": "0.2.0",
+            "version": "0.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/harp-orm/money.git",
-                "reference": "f4a67f336a03b667f30fff7a2ed51aa89e7c8fa9"
+                "reference": "4df8376c39b358d497ce43e38831b9ec8b390b8d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/harp-orm/money/zipball/f4a67f336a03b667f30fff7a2ed51aa89e7c8fa9",
-                "reference": "f4a67f336a03b667f30fff7a2ed51aa89e7c8fa9",
+                "url": "https://api.github.com/repos/harp-orm/money/zipball/4df8376c39b358d497ce43e38831b9ec8b390b8d",
+                "reference": "4df8376c39b358d497ce43e38831b9ec8b390b8d",
                 "shasum": ""
             },
             "require": {
@@ -459,12 +469,11 @@
                 {
                     "name": "Ivan Kerin",
                     "email": "ikerin@gmail.com",
-                    "homepage": "http://www.openbuildings.com",
                     "role": "Author"
                 }
             ],
             "description": "Helper Traits for Sebastian Bergmann's Money",
-            "time": "2014-07-14 14:40:45"
+            "time": "2014-08-25 08:24:10"
         },
         {
             "name": "harp-orm/query",
