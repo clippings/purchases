@@ -4,6 +4,7 @@ namespace CL\Purchases;
 
 use Harp\Harp\Rel;
 use Harp\Harp\Config;
+use Harp\Harp\Repo\Container;
 use Harp\Harp\AbstractModel;
 use Harp\Timestamps\TimestampsTrait;
 use Harp\Money\CurrencyTrait;
@@ -191,7 +192,7 @@ class Purchase extends AbstractModel
      * Find a purchase for the given Store or create a new one
      *
      * @param  Store  $store
-     * @return \CL\Purchases\StorePurchase
+     * @return StorePurchase
      */
     public function getStorePurchaseForStore(Store $store)
     {
@@ -201,7 +202,7 @@ class Purchase extends AbstractModel
             }
         }
 
-        $storePurchase = new StorePurchase();
+        $storePurchase = Container::get('CL\Purchases\StorePurchase')->newModel();
         $storePurchase->setStore($store);
         $this->getStorePurchases()->add($storePurchase);
 
@@ -226,7 +227,7 @@ class Purchase extends AbstractModel
             }
         }
 
-        $item = new ProductItem(['quantity' => $quantity]);
+        $item = Container::get('CL\Purchases\ProductItem')->newModel(['quantity' => $quantity]);
         $item->setProduct($product);
 
         $this->addPurchaseItem($product->getStore(), $item);

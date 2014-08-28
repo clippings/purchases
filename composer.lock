@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "ef21b8de8714eea4d0b31ff7339c1978",
+    "hash": "8092e6e3f1c8045d784b18d78e01ae3d",
     "packages": [
         {
             "name": "clippings/currency-convert",
